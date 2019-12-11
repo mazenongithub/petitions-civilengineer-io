@@ -1,7 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-
+import * as actions from './components/actions'
+import { connect } from 'react-redux';
 function App() {
   return (
     <div className="App">
@@ -23,4 +24,10 @@ function App() {
   );
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    myusermodel: state.myusermodel
+  }
+}
+
+export default connect(mapStateToProps, actions)(App);
