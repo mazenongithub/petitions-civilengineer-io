@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
 
-class ViewPetitions extends Component {
+class ViewPetition extends Component {
     render() {
-        return (<div>View Petitions</div>)
+        return (<div>View Petition</div>)
     }
 
 
@@ -16,4 +16,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, actions)(ViewPetitions);
+export default connect(mapStateToProps, actions)(ViewPetition);

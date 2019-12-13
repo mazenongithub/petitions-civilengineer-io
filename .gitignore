@@ -22,3 +22,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .env.development
+AuthKey_5K2TQG8D44.p8
+src/components/test.js

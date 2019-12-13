@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif:400,700i&display=swap');
 .App {
   text-align: center;
 }
@@ -6,7 +7,189 @@
   height: 40vmin;
   pointer-events: none;
 }
+.showBorder{
+  border:1px solid;
+}
+.noBorder{
+  border:0
+}
+.general-container{
+  flex-direction: row;
+  font-family: 'Noto Serif', serif;
+  padding:10px;
+}
+.general-padding{
+  padding:10px;
+}
+.alignCenter{
+  text-align:center;
+}
 
+.titleFont{
+  font-size: 30px;
+  font-weight: 700;
+  font-style: italic;
+}
+.addLeftMargin{
+  margin-left:10px;
+}
+.general-flex{
+  display:flex;
+  flex-direction: row;
+  font-family: 'Noto Serif', serif;
+  padding:10px;
+  
+}
+.double-grid{
+  display:grid;
+  grid-template-columns: 50% 50%;
+  grid-column-gap:10px;
+  grid-row-gap:10px;
+}
+.flex-1{
+  flex:1;
+}
+.flex-2{
+  flex:2;
+}
+.flex-3{
+  flex:3;
+}
+.flex-4{
+  flex:4;
+}
+.flex-5{
+  flex:5;
+}
+.flex-6{
+  flex:6;
+}
+.flex-7{
+  flex:7
+}
+.flex-8{
+  flex:8;
+}
+.flex-9{
+  flex:9
+}
+.flex-10{
+  flex:10;
+}
+.flex-11{
+  flex:11;
+}
+.flex-12{
+  flex:12;
+}
+.regularFont{
+  font-size:20px;
+}
+.general-Font{
+ font-family: 'Noto Serif', serif;
+}
+.general-field{
+  width:99%;
+  padding:3px;
+  border:1px solid;
+}
+.general-radio{
+  width:58px;
+  height:58px;
+}
+.general-button{
+  border:0px;
+  border-radius:5px;
+  padding:0px;
+  background-color:#FFFFFF;
+}
+.login-button{
+  width:270px;
+  height:70px;
+}
+
+    .showpetitionicon{
+      width:81px;
+      height:87px;
+        }
+
+.petitionid-field{
+  max-width:585px;
+} 
+.remove-icon-small{
+  width:34px;
+  height:31px;
+    } 
+.alignRight{
+  text-align: right;
+}
+.conflictarrow{
+  width:43px;
+  height:27px;
+}
+
+@media screen and (min-width:800px) {
+
+  .conflictarrow{
+    width:90px;
+    height:47px;
+  }
+  .showpetitionid-container{
+    max-width:198px;
+  }
+  .showpetitionicon{
+    width:123px;
+    height:131px;
+      }
+ 
+  .remove-icon-small{
+    width:54px;
+    height:47px;
+      }
+
+  .login-button{
+    width:315px;
+    height:83px;
+  }
+  .regularFont{
+    font-size:24x;
+  }
+  .titleFont{
+    font-size:40px;
+  }
+
+}
+@media screen and (min-width:1000px) {
+  
+  .showpetitionid-container{
+    max-width:270px;
+  }
+}
+@media screen and (min-width:1200px) {
+  .conflictarrow{
+    width:133px;
+    height:64px;
+  }
+  .showpetitionid-container{
+    max-width:345px;
+  }
+  .titleFont{
+    font-size:48px;
+  }
+  .showpetitionicon{
+width:114px;
+height:122px;
+  }
+  .login-button{
+    width:444px;
+    height:108px;
+  }
+  .general-radio{
+    width:84px;
+    height:84px;
+  }
+
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
