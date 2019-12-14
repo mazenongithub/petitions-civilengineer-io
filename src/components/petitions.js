@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
-import { removeIconSmall, petitionidicon, redLeft, redRight, blueLeft, blueRight } from './svg';
+import { removeIconSmall, petitionidicon, redLeft, redRight, blueLeft, blueRight, saveAllPetitionsIcon } from './svg';
 import { CreateConflict, CreatePetition, makeID, CreateArguement } from './functions';
+import { SavePetitions } from './actions/api';
 
 
 class Petitions extends Component {
@@ -327,12 +328,15 @@ class Petitions extends Component {
         if (this.state.activearguementid) {
             let arguementid = this.state.activearguementid;
             let conflict = this.getactiveconflict();
-            // eslint-disable-next-line
-            conflict.arguements.arguement.map(arguement => {
-                if (arguement.arguementid === arguementid) {
-                    activearguement = arguement;
-                }
-            })
+
+            if (conflict.hasOwnProperty("arguements")) {
+                // eslint-disable-next-line
+                conflict.arguements.arguement.map(arguement => {
+                    if (arguement.arguementid === arguementid) {
+                        activearguement = arguement;
+                    }
+                })
+            }
         }
         return activearguement
     }
@@ -341,12 +345,15 @@ class Petitions extends Component {
         if (this.state.activearguementid) {
             let arguementid = this.state.activearguementid;
             let conflict = this.getactiveconflict();
-            // eslint-disable-next-line
-            conflict.arguements.arguement.map((arguement, i) => {
-                if (arguement.arguementid === arguementid) {
-                    position = i;
-                }
-            })
+
+            if (conflict.hasOwnProperty("arguements")) {
+                // eslint-disable-next-line
+                conflict.arguements.arguement.map((arguement, i) => {
+                    if (arguement.arguementid === arguementid) {
+                        position = i;
+                    }
+                })
+            }
         }
         return position
     }
@@ -610,6 +617,27 @@ class Petitions extends Component {
         return conflict;
 
     }
+    getconflictfromid(conflictid) {
+        let petition = this.getactivepetition();
+        let conflicts = {};
+        if (petition.hasOwnProperty("conflicts")) {
+            // eslint-disable-next-line
+            petition.conflicts.conflict.map(conflict => {
+                if (conflict.conflictid === conflictid) {
+                    conflicts = conflict;
+                }
+            })
+        }
+        return (conflicts)
+    }
+    firstarguementfromconflictid(conflictid) {
+        let conflict = this.getconflictfromid(conflictid);
+        let arguement = {};
+        if (conflict.hasOwnProperty("arguements")) {
+            arguement = conflict.arguements.arguement[0];
+        }
+        return arguement;
+    }
     scrollconflictup() {
         if (this.state.activeconflictid) {
             let i = this.getactiveconflictposition();
@@ -621,7 +649,8 @@ class Petitions extends Component {
 
                         i = i + 1;
                         let activeconflictid = this.getconflictidbyposition(i);
-                        this.setState({ activeconflictid })
+                        let activearguementid = this.firstarguementfromconflictid(activeconflictid).arguementid;
+                        this.setState({ activeconflictid, activearguementid })
                     }
 
                 }
@@ -691,7 +720,9 @@ class Petitions extends Component {
 
                         i = i - 1;
                         let activeconflictid = this.getconflictidbyposition(i);
-                        this.setState({ activeconflictid })
+                        let activearguementid = this.firstarguementfromconflictid(activeconflictid).arguementid;
+                        this.setState({ activeconflictid, activearguementid })
+
                     }
 
                 }
@@ -970,6 +1001,22 @@ class Petitions extends Component {
         }
         return showpetition;
     }
+    async saveallpetition() {
+        try {
+            if (this.props.myusermodel) {
+                let myuser = this.props.myusermodel;
+                console.log(myuser)
+                let response = await SavePetitions({ myuser });
+                console.log(response)
+                if (response.response.hasOwnProperty("myuser")) {
+                    this.props.reduxUser(response.response.myuser)
+                    this.setState({ message: response.response.message })
+                }
+            }
+        } catch (err) {
+            alert(err)
+        }
+    }
     render() {
         return (<div className="general-flex">
             <div className="flex-1">
@@ -993,6 +1040,19 @@ class Petitions extends Component {
                 {this.showconflicts()}
                 {this.showpetition()}
                 {this.showarguements()}
+
+                <div className="general-flex">
+                    <div className="flex-1">
+                        <div className="general-container regularFont alignCenter">
+                            {this.state.message}
+                        </div>
+                        <div className="general-container alignCenter">
+                            <button className="login-button general-button" onClick={() => this.saveallpetition()}>
+                                {saveAllPetitionsIcon()}
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
 
 

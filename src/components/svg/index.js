@@ -2,6 +2,9 @@ import React from 'react'
 export function radioOpen() {
     return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 85 80"><defs><style></style></defs><title>radioopen</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><ellipse className="radio-open-1" cx="42.5" cy="40" rx="41.5" ry="39" /></g></g></svg>)
 }
+export function saveAllPetitionsIcon() {
+    return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 526 121.72"><defs><style></style></defs><title>saveallpetitions</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect className="saveallpetitions-1" x="1" y="1" width="524" height="119.72" rx="16.85" /><text className="saveallpetitions-2" transform="translate(34.7 72.93) scale(0.96 1)">Save All Petitions </text></g></g></svg>)
+}
 export function radioClosed() {
     return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 85 80"><defs><style></style></defs><title>radioselect</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><ellipse className="radioselect-1" cx="42.5" cy="40" rx="41.5" ry="39" /><circle className="radioselect-2" cx="42.5" cy="40" r="20.5" /></g></g></svg>)
 }
