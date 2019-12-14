@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
 import { removeIconSmall, petitionidicon, redLeft, redRight, blueLeft, blueRight, saveAllPetitionsIcon } from './svg';
-import { CreateConflict, CreatePetition, makeID, CreateArguement } from './functions';
+import { CreateConflict, CreatePetition, makeID, CreateArguement, formatUTCDateforDisplay } from './functions';
 import { SavePetitions } from './actions/api';
 
 
@@ -1010,7 +1010,7 @@ class Petitions extends Component {
                 console.log(response)
                 if (response.response.hasOwnProperty("myuser")) {
                     this.props.reduxUser(response.response.myuser)
-                    this.setState({ message: response.response.message })
+                    this.setState({ message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
                 }
             }
         } catch (err) {

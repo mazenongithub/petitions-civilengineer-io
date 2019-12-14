@@ -1,3 +1,28 @@
+export function formatUTCDateforDisplay(timein) {
+    //let timein = '2019-05-22 19:33:22'
+    let datein = new Date(`${timein.replace(/-/g, '/')} UTC`);
+    let hours = datein.getHours();
+    let ampm = "";
+    if (hours > 12) {
+        hours = hours - 12;
+        ampm = 'pm'
+    } else {
+        ampm = 'am'
+    }
+
+    let minutes = datein.getMinutes();
+    if (minutes < 10) {
+        minutes = `0${minutes}`;
+    }
+    let seconds = datein.getSeconds();
+    if (seconds < 10) {
+        seconds = `0${seconds}`;
+    }
+    let day = datein.getDate();
+    let month = datein.getMonth() + 1;
+    let year = datein.getFullYear();
+    return (`${month}/${day}/${year} ${hours}:${minutes}:${seconds}`)
+}
 export function MyUserModel(userid, client, clientid, firstname, lastname, gender, emailaddress, organization, profileurl) {
     return { userid, client, clientid, firstname, lastname, gender, emailaddress, organization, profileurl }
 }
