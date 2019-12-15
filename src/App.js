@@ -1,34 +1,20 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
-import logo from './logo.svg';
 import './App.css';
 import './components/svg/svg.css';
 import Register from './components/register';
 import Petitions from './components/petitions';
+import ViewPetitions from './components/viewpetitions';
+import Landing from './components/landing'
+import Header from './components/header';
+import Profile from './components/profile';
 import * as actions from './components/actions';
 import { CheckUserLogin } from './components/actions/api';
 import firebase from 'firebase'
 import { firebaseConfig } from './components/firebase';
 
-const landing = () => {
-  return (<div className="App">
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-        Edit <code>src/App.js</code> and save to reload.
-</p>
-      <a
-        className="App-link"
-        href="https://reactjs.org"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn React
-</a>
-    </header>
-  </div>)
-}
+
 
 class App extends Component {
   componentDidMount() {
@@ -44,7 +30,13 @@ class App extends Component {
       console.log(myuser)
       if (myuser.hasOwnProperty("myuser")) {
         this.props.reduxUser(myuser.myuser)
+        if (myuser.myuser.hasOwnProperty("allusers")) {
+          this.props.reduxAllUsers(myuser.myuser.allusers)
+        }
+      } else {
+        this.props.reduxUser(myuser)
       }
+
 
     } catch (err) {
       alert(err)
@@ -54,11 +46,17 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <Switch>
-          <Route exact path="/" component={landing} />
-          <Route exact path="/users/register" component={Register} />
-          <Route exact path="/:userid/petitions" component={Petitions} />
-        </Switch>
+        <div className="general-container">
+          <Header />
+          <Switch>
+            <Route exact path="/" component={Landing} />
+            <Route exact path="/users/register" component={Register} />
+            <Route exact path="/users/viewpetitions" component={ViewPetitions} />
+            <Route exact path="/:userid/petitions" component={Petitions} />
+            <Route exact path="/:userid/profile" component={Profile} />
+          </Switch>
+
+        </div>
       </BrowserRouter>
     );
   }
@@ -66,7 +64,8 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    myusermodel: state.myusermodel
+    myusermodel: state.myusermodel,
+    allusers: state.allusers
   }
 }
 

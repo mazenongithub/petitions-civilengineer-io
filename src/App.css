@@ -2,6 +2,10 @@
 .App {
   text-align: center;
 }
+.spinning-button{
+  width:75px;
+  height:75px;
+}
 
 .App-logo {
   height: 40vmin;
@@ -134,6 +138,10 @@
 .conflictarrow{
   width:43px;
   height:27px;
+}
+.general-link{
+  text-decoration: none;
+  color:#000000;
 }
 
 @media screen and (min-width:800px) {
