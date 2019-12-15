@@ -204,7 +204,7 @@ class Petitions extends Component {
 
             let activeconflictid = this.initialconflictid(activepetitionid);
             let activearguementid = this.initialarguementid(activepetitionid)
-            console.log(activeconflictid, activearguementid)
+
             this.setState({ activepetitionid, activeconflictid, activearguementid })
         } else {
             this.setState({ activepetitionid: false, activeconflictid: false, activearguementid: false })
@@ -478,7 +478,7 @@ class Petitions extends Component {
         if (this.state.activearguementid) {
             return (this.getactivearguementposition() + 1)
         } else {
-            return
+            return (0)
         }
 
 
@@ -592,7 +592,7 @@ class Petitions extends Component {
             return (this.getactiveconflictposition() + 1)
 
         } else {
-            return "";
+            return (0);
         }
 
     }
@@ -950,16 +950,34 @@ class Petitions extends Component {
     }
     makeconflictactive(conflictid) {
         if (this.state.activeconflictid !== conflictid) {
-            this.setState({ activeconflictid: conflictid, activearguementid: '' })
+            let activearguementid = this.firstarguementfromconflictid(conflictid).arguementid;
+            this.setState({ activeconflictid: conflictid, activearguementid })
         } else {
             this.setState({ activeconflictid: '', activearguementid: '' })
         }
     }
-
+    getactiveconflictdisplay(conflictid) {
+        let activeconflictdisplay = "";
+        if (this.state.activeconflictid) {
+            if (this.state.activeconflictid === conflictid) {
+                activeconflictdisplay = 'activeconflictdisplay'
+            }
+        }
+        return activeconflictdisplay;
+    }
+    getactivearguementdisplay(arguementid) {
+        let activearguementdisplay = "";
+        if (this.state.activearguementid) {
+            if (this.state.activearguementid === arguementid) {
+                activearguementdisplay = 'activearguementdisplay'
+            }
+        }
+        return activearguementdisplay;
+    }
     showpetitionconflict(conflict, seq) {
         return (<div className="general-flex" onClick={event => { this.makeconflictactive(conflict.conflictid) }}>
-            <div className="flex-1">
-                <span className="titleFont">Conflict#{seq + 1}</span><span className="regularFont">{conflict.conflict}</span>
+            <div className={`flex-1`}>
+                <span className="titleFont">Conflict#{seq + 1}</span><span className={`regularFont ${this.getactiveconflictdisplay(conflict.conflictid)}`}>{conflict.conflict}</span><span><button className="general-button remove-icon-small addLeftMargin">{removeIconSmall()}</button></span>
             </div>
         </div>)
 
@@ -975,7 +993,7 @@ class Petitions extends Component {
 
         return (<div className="general-flex" onClick={() => { this.makearguementactive(arguement.arguementid) }}>
             <div className="flex-1">
-                <span className="titleFont">Arguement#{i + 1}</span> <span className="regularFont">{arguement.arguement}</span>
+                <span className="titleFont">Arguement#{i + 1}</span> <span className={`regularFont ${this.getactivearguementdisplay(arguement.arguementid)}`}>{arguement.arguement}</span><span><button className="general-button remove-icon-small addLeftMargin">{removeIconSmall()}</button></span>
             </div>
         </div>)
     }

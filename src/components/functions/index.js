@@ -21,7 +21,7 @@ export function formatUTCDateforDisplay(timein) {
     let day = datein.getDate();
     let month = datein.getMonth() + 1;
     let year = datein.getFullYear();
-    return (`${month}/${day}/${year} ${hours}:${minutes}:${seconds}`)
+    return (`${month}/${day}/${year} ${hours}:${minutes}:${seconds} ${ampm}`)
 }
 export function MyUserModel(userid, client, clientid, firstname, lastname, gender, emailaddress, organization, profileurl) {
     return { userid, client, clientid, firstname, lastname, gender, emailaddress, organization, profileurl }
