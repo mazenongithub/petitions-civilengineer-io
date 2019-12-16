@@ -19,7 +19,7 @@
   border:0
 }
 
-textarea{
+textarea.general-text{
   font-family: 'Noto Serif', serif;
 }
 .general-container{

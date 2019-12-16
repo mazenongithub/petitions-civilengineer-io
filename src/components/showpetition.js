@@ -177,11 +177,11 @@ class ShowPetition extends Component {
             // if you already like it then switch it to ''
             let like = this.getuserlike();
             console.log(like)
-            if (like.like === 'supported') {
+            if (like.like === 'support') {
                 value = ''
 
             } else {
-                value = 'supported'
+                value = 'support'
             }
             allusers.myuser[i].petitions.petition[j].likes.like[k].like = value;
             this.props.reduxAllUsers(allusers);
@@ -192,7 +192,7 @@ class ShowPetition extends Component {
         } else {
             // if you dont like it add it
             let likeid = makeID(16)
-            value = 'supported';
+            value = 'support';
             let userid = this.props.myusermodel.userid;
 
             let petitions = this.getpetition()
@@ -233,7 +233,7 @@ class ShowPetition extends Component {
                     // eslint-disable-next-line
                     petition.likes.like.map(like => {
                         if (like.userid === userid) {
-                            if (like.like === 'supported') {
+                            if (like.like === 'support') {
                                 checkyesicon = true;
                             }
                         }
@@ -595,6 +595,46 @@ class ShowPetition extends Component {
         }
         return comments;
     }
+    petitionlikemessage() {
+        let message = '';
+        let support = [];
+        let against = [];
+        let petition = this.getpetition();
+        if (petition.hasOwnProperty("likes")) {
+            // eslint-disable-next-line
+            petition.likes.like.map(like => {
+                let userid = like.userid;
+                if (like.like === 'support') {
+                    support.push(this.getuserbyuserid(userid))
+
+                } else if (like.like === 'against') {
+                    against.push(this.getuserbyuserid(userid))
+                }
+            })
+        }
+        if (support.length > 0) {
+            // eslint-disable-next-line
+            support.map((myuser, i) => {
+                if (i != support.length - 1) {
+                    message += `${myuser.firstname} ${myuser.lastname}, `
+                } else {
+                    message += `${myuser.firstname} ${myuser.lastname} `
+                }
+
+
+            })
+            message += `supports this`
+        }
+        if (against.length > 0) {
+            if (support.length > 0) {
+                message += `, ${against.length} people are against it`
+            } else {
+                message += `${against.length} people are against it`
+            }
+
+        }
+        return message;
+    }
     render() {
 
         const petition = this.getpetition();
@@ -637,6 +677,9 @@ class ShowPetition extends Component {
                             </button>
                             <span className='addLeftMargin'> Against</span>
                         </div>
+                    </div>
+                    <div className="general-container regularFont">
+                        {this.petitionlikemessage()}
                     </div>
 
                     {this.petitioncommentbox()}
