@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 class ViewPetitions extends Component {
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = { height: 0, width: 0 }
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this)
     }
     componentDidMount() {
@@ -134,7 +134,7 @@ class ViewPetitions extends Component {
 
         return (<div className="general-flex">
             <div className="flex-1">
-                <Link to={`/petitions/${petition.petitionid}`} className="general-link">
+                <Link to={`/users/viewpetition/${petition.petitionid}`} className="general-link">
                     <div className="regularFont alignCenter">
                         {`${process.env.REACT_APP_CLIENT_API}/petitions/${petition.petitionid}`}
                     </div>
@@ -169,7 +169,7 @@ class ViewPetitions extends Component {
                     <div className="flex-1 regularFont">
                         Results:
             </div>
-                    <div className="flex-3 regularFont showBorder">
+                    <div className="flex-3 regularFont">
                         {this.searchresults()}
                     </div>
                 </div>)

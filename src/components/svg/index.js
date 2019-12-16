@@ -19,6 +19,18 @@ export function googleSignInIcon() {
 export function RegisterNowIcon() {
     return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 378 81.5"> <defs><style></style></defs> <title>registernow</title> <g id="Layer_2" data-name="Layer 2"><g id="guides"><rect className="registernow-1" x="2.5" y="0.5" width="375" height="80.5" rx="10.64" /><text className="registernow-2" transform="translate(53.22 49.57)">Regi<tspan className="registernow-3" x="89.24" y="0">s</tspan><tspan x="110.24" y="0">ter N</tspan><tspan className="registernow-4" x="208.92" y="0">o</tspan><tspan className="registernow-5" x="232.88" y="0">w</tspan></text></g></g></svg>)
 }
+export function submitIcon() {
+    return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 316.4 97.07"><defs><style></style></defs><title>submiticon</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect className="submiticon-1" x="1" y="1" width="314.4" height="95.07" rx="8.77" /><text className="submiticon-2" transform="translate(73.66 64.64)">Submit</text></g></g></svg>)
+}
+export function emptyBox() {
+    return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 100"><defs><style></style></defs><title>emptybox</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect className="emptybox-1" x="2" y="2" width="121" height="96" /></g></g></svg>)
+}
+export function noIcon() {
+    return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72.06 72.06"><defs><style></style></defs><title>noicon</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><polygon className="noicon-1" points="50.54 71.06 21.52 71.06 1 50.54 1 21.52 21.52 1 50.54 1 71.06 21.52 71.06 50.54 50.54 71.06" /><text className="noicon-2" transform="translate(9.2 46.57) scale(1.19 1)">No</text></g></g></svg>)
+}
+export function yesIcon() {
+    return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 83"><defs><style></style></defs><title>yesicon</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><ellipse className="yesicon-1" cx="50" cy="41.5" rx="49.5" ry="41" /><text className="yesicon-2" transform="translate(17.81 54.06)"><tspan className="yesicon-3">Y</tspan><tspan x="21.85" y="0">es</tspan></text></g></g></svg>)
+}
 export function reactLogo() {
     return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 595.3">
         <g fill="#61DAFB">

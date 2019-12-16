@@ -6,6 +6,7 @@ import './components/svg/svg.css';
 import Register from './components/register';
 import Petitions from './components/petitions';
 import ViewPetitions from './components/viewpetitions';
+import ShowPetition from './components/showpetition';
 import Landing from './components/landing'
 import Header from './components/header';
 import Profile from './components/profile';
@@ -52,8 +53,10 @@ class App extends Component {
             <Route exact path="/" component={Landing} />
             <Route exact path="/users/register" component={Register} />
             <Route exact path="/users/viewpetitions" component={ViewPetitions} />
+            <Route exact path="/users/viewpetition/:petitionid" component={ShowPetition} />
             <Route exact path="/:userid/petitions" component={Petitions} />
             <Route exact path="/:userid/profile" component={Profile} />
+
           </Switch>
 
         </div>

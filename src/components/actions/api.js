@@ -54,7 +54,7 @@ export async function LoadAllUsers() {
 }
 export async function CheckUserLogin() {
 
-    let APIURL = `${process.env.REACT_APP_SERVER_API}/checkuser/application`
+    let APIURL = `${process.env.REACT_APP_SERVER_API}/users/checkuser`
     console.log(APIURL)
     return fetch(APIURL, { credentials: 'include' }).then(resp => {
 

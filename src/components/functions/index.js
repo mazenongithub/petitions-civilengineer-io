@@ -36,6 +36,12 @@ export function CreatePetition(petitionid, petition, versus) {
 export function CreateArguement(arguementid, arguement) {
     return ({ arguementid, arguement })
 }
+export function CreateLike(likeid, like, userid) {
+    return ({ likeid, like, userid })
+}
+export function CreateComment(commentid, comment, userid) {
+    return ({ commentid, comment, userid })
+}
 export function makeID(length) {
     let result = '';
     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
