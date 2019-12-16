@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
-import { LoadAllUsers } from './actions/api';
+import { LoadAllUsers, SaveComments } from './actions/api';
 import { yesIcon, noIcon, emptyBox, submitIcon, removeIconSmall } from './svg';
-import { CreateLike, CreateComment, makeID } from './functions';
+import { CreateLike, CreateComment, makeID, formatUTCDateforDisplay } from './functions';
 class ShowPetition extends Component {
     constructor(props) {
         super(props)
@@ -61,7 +61,6 @@ class ShowPetition extends Component {
         if (this.props.allusers) {
             if (this.props.allusers.hasOwnProperty("myuser")) {
                 let myusers = this.props.allusers.myuser;
-                console.log("myusers", myusers)
                 // eslint-disable-next-line
                 myusers.map(myuser => {
                     if (myuser.hasOwnProperty("petitions")) {
@@ -78,7 +77,7 @@ class ShowPetition extends Component {
         return petitions;
     }
     showpetitionconflict(conflict, seq) {
-        return (<div className="general-flex">
+        return (<div className="general-flex" key={conflict.conflictid}>
             <div className={`flex-1`}>
                 <span className="titleFont">Conflict#{seq + 1}</span><span className={`regularFont`}>{conflict.conflict}</span>
             </div>
@@ -87,7 +86,7 @@ class ShowPetition extends Component {
     }
     showpetitionarguement(arguement, i) {
 
-        return (<div className="general-flex">
+        return (<div className="general-flex" key={arguement.arguementid}>
             <div className="flex-1">
                 <span className="titleFont">Arguement#{i + 1}</span> <span className={`regularFont`}>{arguement.arguement}</span>
             </div>
@@ -176,7 +175,7 @@ class ShowPetition extends Component {
             k = k - 1;
             // if you already like it then switch it to ''
             let like = this.getuserlike();
-            console.log(like)
+
             if (like.like === 'support') {
                 value = ''
 
@@ -226,7 +225,7 @@ class ShowPetition extends Component {
         if (this.props.myusermodel) {
             let userid = this.props.myusermodel.userid;
             let petition = this.getpetition();
-            console.log(petition)
+
             if (petition.hasOwnProperty("likes")) {
 
                 if (petition.likes.hasOwnProperty("like") && petition.likes.like.hasOwnProperty("length")) {
@@ -315,7 +314,7 @@ class ShowPetition extends Component {
         if (this.props.myusermodel) {
             let userid = this.props.myusermodel.userid;
             let petition = this.getpetition();
-            console.log(petition)
+
             if (petition.hasOwnProperty("likes")) {
 
                 if (petition.likes.hasOwnProperty("like") && petition.likes.like.hasOwnProperty("length")) {
@@ -421,7 +420,7 @@ class ShowPetition extends Component {
     }
 
     getcomment() {
-        console.log("Getcomment")
+
         if (this.state.activecommentid) {
             let comment = this.getactivecomment();
             return comment.comment;
@@ -431,6 +430,82 @@ class ShowPetition extends Component {
         }
 
 
+
+    }
+    assembleuserforcomments() {
+        let myuser = {};
+        let assemblelikes = [];
+        let assemblecomments = [];
+        if (this.props.myusermodel) {
+            let user = this.props.myusermodel;
+            let userid = user.userid;
+            myuser.userid = userid;
+
+            if (this.props.allusers) {
+                let allusers = this.props.allusers;
+                // eslint-disable-next-line
+                if (allusers.hasOwnProperty("myuser")) {
+                    // eslint-disable-next-line
+                    allusers.myuser.map(myuser => {
+                        if (myuser.hasOwnProperty("petitions")) {
+                            // eslint-disable-next-line
+                            myuser.petitions.petition.map(petition => {
+                                if (petition.hasOwnProperty("likes")) {
+                                    // eslint-disable-next-line
+                                    petition.likes.like.map(like => {
+                                        if (like.userid === userid) {
+                                            let reaction = like.like;
+                                            let likeid = like.likeid;
+                                            let petitionid = petition.petitionid;
+                                            assemblelikes.push({ userid, like: reaction, likeid, petitionid })
+                                        }
+                                    })
+
+                                }
+
+                                if (petition.hasOwnProperty("comments")) {
+                                    // eslint-disable-next-line
+                                    petition.comments.comment.map(comments => {
+                                        if (comments.userid === userid) {
+                                            let comment = comments.comment;
+                                            let commentid = comments.commentid;
+                                            let petitionid = petition.petitionid;
+                                            assemblecomments.push({ userid, comment, commentid, petitionid })
+                                        }
+                                    })
+
+                                }
+                            })
+                        }
+                    })
+
+                }
+
+            }
+            myuser.likes = assemblelikes;
+            myuser.comments = assemblecomments;
+            return myuser;
+
+        }
+    }
+
+    async submitcomments() {
+        let myuser = this.assembleuserforcomments();
+        console.log(myuser)
+
+        try {
+
+            let response = await SaveComments({ myuser })
+            console.log(response)
+            if (response.hasOwnProperty("allusers")) {
+                this.props.reduxAllUsers(response.allusers)
+            }
+            if (response.hasOwnProperty("message")) {
+                this.setState({ message: `${response.message} Last Updated ${formatUTCDateforDisplay(response.lastupdated)}` })
+            }
+        } catch (err) {
+            alert(err)
+        }
 
     }
     petitioncommentbox() {
@@ -455,9 +530,9 @@ class ShowPetition extends Component {
                             <div className="flex-3 regularFont">
                                 {this.state.message}
                             </div>
-                            <div className="flex-1 showBorder alignRight">
+                            <div className="flex-1 alignRight">
 
-                                <button className="submit-button general-button">{submitIcon()}</button>
+                                <button className="submit-button general-button" onClick={() => { this.submitcomments() }}>{submitIcon()}</button>
                             </div>
                         </div>
 
@@ -483,9 +558,9 @@ class ShowPetition extends Component {
                                     <div className="flex-2 regularFont">
                                         {this.state.message}
                                     </div>
-                                    <div className="flex-1 showBorder alignRight">
+                                    <div className="flex-1 alignRight">
 
-                                        <button className="submit-button general-button">{submitIcon()}</button>
+                                        <button className="submit-button general-button" onClick={() => { this.submitcomments() }}>{submitIcon()}</button>
                                     </div>
                                 </div>
 
@@ -500,8 +575,38 @@ class ShowPetition extends Component {
 
         }
     }
-    removeComment() {
+    getcommentkeybyid(commentid) {
+        let commentkeybyid = false;
 
+        let petition = this.getpetition();
+        if (petition.hasOwnProperty("comments")) {
+            // eslint-disable-next-line
+            petition.comments.comment.map((comment, i) => {
+                if (comment.commentid === commentid) {
+                    commentkeybyid = i;
+                }
+            })
+        }
+
+        return (commentkeybyid)
+    }
+    removeComment(commentid) {
+        if (this.props.myusermodel.hasOwnProperty("userid")) {
+            let allusers = this.props.allusers;
+
+            if (this.checkmakecommentactive(commentid)) {
+                let userkeys = this.getuserkeysfrompetition();
+                let i = userkeys[0];
+                let j = userkeys[i];
+                let k = this.getcommentkeybyid(commentid);
+                allusers.myuser[i].petitions.petition[j].comments.comment.splice(k, 1);
+                this.props.reduxAllUsers(allusers);
+
+                this.setState({ activecommentid: '' })
+
+            }
+
+        }
     }
     getuserbyuserid(userid) {
         let user = {};
@@ -527,22 +632,50 @@ class ShowPetition extends Component {
             // eslint-disable-next-line
             petition.comments.comment.map(comment => {
                 if (comment.commentid === commentid) {
+
                     userid = comment.userid;
+
                     user = this.getuserbyuserid(userid)
                 }
             })
         }
         return user;
     }
+    checkmakecommentactive(commentid) {
+        let commentcheck = false;
+        if (this.props.myusermodel) {
+
+            if (this.props.myusermodel.hasOwnProperty("userid")) {
+                let userid = this.props.myusermodel.userid;
+                let user = this.getuserbycommentid(commentid);
+                if (user.userid === userid) {
+                    commentcheck = true;
+
+
+                }
+
+
+
+            }
+        }
+
+
+        return commentcheck;
+    }
+    makecommentactive(commentid) {
+        if (this.checkmakecommentactive(commentid)) {
+            this.setState({ activecommentid: commentid })
+        }
+    }
     showpetitioncomment(comment) {
         const user = this.getuserbycommentid(comment.commentid);
         const username = `${user.firstname} ${user.lastname}`
         if (this.state.width > 1200) {
-            return (<div className="general-flex">
+            return (<div className="general-flex" key={comment.commentid}>
                 <div className="flex-1">
                     <div className="picture-icon-container showBorder">&nbsp;</div>
                 </div>
-                <div className="flex-4 regularFont">
+                <div className="flex-4 regularFont" onClick={() => { this.makecommentactive(comment.commentid) }}>
 
                     {comment.comment}  <span className="alignLeft">by {username}</span>
                 </div>
@@ -554,11 +687,11 @@ class ShowPetition extends Component {
             </div>)
 
         } else if (this.state.width > 800) {
-            return (<div className="general-flex">
+            return (<div className="general-flex" key={comment.commentid}>
                 <div className="flex-1">
                     <div className="picture-icon-container showBorder">&nbsp;</div>
                 </div>
-                <div className="flex-5 regularFont">
+                <div className="flex-5 regularFont" onClick={() => { this.makecommentactive(comment.commentid) }}>
 
                     {comment.comment}  <span className="alignLeft">by {username}</span>
                 </div>
@@ -570,11 +703,11 @@ class ShowPetition extends Component {
             </div>)
 
         } else {
-            return (<div className="general-flex">
+            return (<div className="general-flex" key={comment.commentid}>
                 <div className="flex-1">
                     <div className="picture-icon-container showBorder">&nbsp;</div>
                 </div>
-                <div className="flex-3 regularFont">
+                <div className="flex-3 regularFont" onClick={() => { this.makecommentactive(comment.commentid) }}>
                     {comment.comment}  <span className="alignLeft">by {username} </span>
                     <button className="general-button remove-icon-small addMarginLeft" onClick={() => this.removeComment(comment.commentid)}>
                         {removeIconSmall()}
@@ -615,7 +748,7 @@ class ShowPetition extends Component {
         if (support.length > 0) {
             // eslint-disable-next-line
             support.map((myuser, i) => {
-                if (i != support.length - 1) {
+                if (i !== support.length - 1) {
                     message += `${myuser.firstname} ${myuser.lastname}, `
                 } else {
                     message += `${myuser.firstname} ${myuser.lastname} `
@@ -640,7 +773,7 @@ class ShowPetition extends Component {
         const petition = this.getpetition();
         const user = this.getuserbypetitionid();
         const username = `${user.firstname} ${user.lastname}`
-        console.log(petition)
+
         return (
             <div className="general-flex">
                 <div className="flex-1">
