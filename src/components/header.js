@@ -12,7 +12,7 @@ class Header extends Component {
             let userid = this.props.myusermodel.userid;
             if (this.props.myusermodel.hasOwnProperty("message")) {
                 return (
-                    <Link to={`/users/register`} className="general-link regularFont">/users/register</Link>)
+                    <Link to={`/users/register`} className="general-link regularFont">/register(login)</Link>)
             } else if (this.props.myusermodel.hasOwnProperty("userid")) {
                 const url = `${process.env.REACT_APP_SERVER_API}/users/${userid}/logout`;
                 return (<a href={url} className="general-link regularFont"> logout </a>)
@@ -48,13 +48,13 @@ class Header extends Component {
 
 
 
-                    <div className="general-flex">
+                    <div className="header-flex">
                         <div className="flex-1">
                             {headerIcon()}
                         </div>
                     </div>
 
-                    <div className="general-flex">
+                    <div className="header-flex header-background">
                         <div className="flex-1 regularFont showBorder alignCenter">
                             {this.handleleftheader()}
                         </div>

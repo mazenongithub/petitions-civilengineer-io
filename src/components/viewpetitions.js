@@ -185,7 +185,7 @@ class ViewPetitions extends Component {
                         </div>
 
                         <div className="general-flex">
-                            <div className="flex-1 regularFont showBorder">
+                            <div className="flex-1 regularFont">
                                 {this.searchresults()}
                             </div>
                         </div>
@@ -199,10 +199,10 @@ class ViewPetitions extends Component {
     render() {
         return (
             <div className="general-flex">
-                <div className="flex-1 showBorder">
+                <div className="flex-1">
 
                     <div className="general-flex">
-                        <div className="flex-1 showBorder alignCenter titleFont">
+                        <div className="flex-1 alignCenter titleFont">
                             View Petitions
                          </div>
                     </div>

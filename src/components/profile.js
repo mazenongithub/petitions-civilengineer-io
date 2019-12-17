@@ -61,7 +61,7 @@ class Profile extends Component {
         }
     }
     handleradioiconfemale() {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         if (myuser.gender === "female") {
             return (radioClosed())
         } else {
@@ -70,7 +70,7 @@ class Profile extends Component {
         }
     }
     handleradioiconmale() {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         if (myuser.gender === "male") {
             return (radioClosed())
         } else {
@@ -78,19 +78,35 @@ class Profile extends Component {
             return (radioOpen())
         }
     }
+    handlebottomlinks() {
+        let myuser = this.getuser()
+        let bottomlinks = []
+        bottomlinks.push(<div className="general-container titleFont" key="bottom-link-1">
+            <Link className="general-link titleFont" to={`/${myuser.userid}/petitions`}>Go To Create A Petition</Link>
+        </div>)
+        bottomlinks.push(<div className="general-container titleFont" key="bottom-link-2">
+            <Link className="general-link titleFont" to={`/users/viewpetitions`}> Go To View Petitions </Link>
+        </div>)
+        return bottomlinks;
+
+
+    }
+    showtitle() {
+
+        return (<div className="general-flex">
+            <div className="flex-1">
+                <div className="general-container titleFont alignCenter">{this.getprofilemessage()}</div>
+            </div>
+        </div>)
+    }
     responsivelayout() {
-        let myuser = this.getmyuser();
-        if (this.state.width > 400) {
+
+        if (this.state.width > 800) {
             return (
                 <div className="general-flex">
                     <div className="flex-1">
 
-                        <div className="general-flex ">
-                            <div className="flex-1">
-                                <div className="general-container  titleFont alignCenter">Profile</div>
-                                <div className="general-container  regularFont">UserID {this.getuserid()} </div>
-                            </div>
-                        </div>
+                        {this.showtitle()}
 
                         <div className="general-flex">
                             <div className="flex-1  regularFont">
@@ -146,15 +162,8 @@ class Profile extends Component {
                             </div>
                         </div>
 
-                        <div className="general-container titleFont">
-                            Your are Signed as {myuser.firstname} {myuser.lastname}
-                        </div>
-                        <div className="general-container titleFont">
-                            <Link className="general-link titleFont" to={`/${myuser.userid}/petitions`}>Go To Create A Petition</Link>
-                        </div>
-                        <div className="general-container titleFont">
-                            <Link className="general-link titleFont" to={`/users/viewpetitions`}> Go To View Petitions </Link>
-                        </div>
+
+                        {this.handlebottomlinks()}
 
 
 
@@ -170,13 +179,10 @@ class Profile extends Component {
             return (
                 <div className="general-flex">
                     <div className="flex-1">
-                        <div className="general-flex ">
-                            <div className="flex-1">
-                                <div className="general-container  general-font titleFont alignCenter">Profile</div>
-                                <div className="general-container  general-font regularFont">User ID {this.getuserid()} </div>
-                            </div>
-                        </div>
-                        <div className="general-flex ">
+
+                        {this.showtitle()}
+
+                        <div className="general-flex">
                             <div className="flex-1  regularFont">
                                 First Name <br />
                                 <input className="general-field regularFont" value={this.getfirstname()} onChange={event => { this.setState({ firstname: event.target.value }) }} />
@@ -192,12 +198,12 @@ class Profile extends Component {
 
                                     Male
                                 <button className="general-radio general-button" onClick={() => { this.handleradiomale() }}>
-                                        {this.handleradiomale()}
+                                        {this.handleradioiconmale()}
                                     </button>
                                     <span className="addLeftMargin">
                                         Female
                                     <button className="general-radio general-button" onClick={() => { this.handleradiofemale() }}>
-                                            {this.handleradiofemale()}
+                                            {this.handleradioiconfemale()}
                                         </button>
                                     </span>
                                 </div>
@@ -221,15 +227,7 @@ class Profile extends Component {
                                     </button>
                                 </div>
 
-                                <div className="general-container titleFont">
-                                    Your are Signed as
-                            </div>
-                                <div className="general-container titleFont">
-                                    Go To Create A Petition
-                            </div>
-                                <div className="general-container titleFont">
-                                    Go To View Petitions
-                            </div>
+                                {this.handlebottomlinks()}
 
 
 
@@ -240,61 +238,66 @@ class Profile extends Component {
             )
         }
     }
-    getmyuser() {
-        let myuser = {};
-        if (this.props.myusermodel) {
+    getuser() {
+        let myuser = false;
+        if (this.props.myusermodel.userid) {
+
+
             myuser = this.props.myusermodel;
+
         }
+        console.log(myuser)
+
         return myuser;
     }
     getuserid() {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         return myuser.userid;
     }
     getfirstname() {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         return myuser.firstname
     }
     handlefirstname(firstname) {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         myuser.firstname = firstname;
         this.props.reduxUser(myuser);
         this.setState({ render: 'render' })
 
     }
     getlastname() {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         return myuser.lastname;
     }
     handlelastname(lastname) {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         myuser.lastname = lastname;
         this.props.reduxUser(myuser);
         this.setState({ render: 'render' })
     }
     getorganization() {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         return myuser.organization;
     }
     handleorganization(organization) {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         myuser.organization = organization;
         this.props.reduxUser(myuser);
         this.setState({ render: 'render' })
     }
     getemailaddress() {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         return myuser.emailaddress;
     }
     handleemailaddress(emailaddress) {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         myuser.emailaddress = emailaddress;
         this.props.reduxUser(myuser);
         this.setState({ render: 'render' })
     }
 
     handleradiomale() {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         if (myuser.gender === 'female') {
 
             myuser.gender = 'male';
@@ -304,12 +307,20 @@ class Profile extends Component {
 
     }
     handleradiofemale() {
-        let myuser = this.getmyuser();
+        let myuser = this.getuser();
         if (myuser.gender === 'male') {
 
             myuser.gender = 'female';
             this.props.reduxUser(myuser);
             this.setState({ render: 'render' })
+        }
+    }
+    getprofilemessage() {
+        let myuser = this.getuser();
+        if (myuser) {
+            return (`Your are logged in /${myuser.userid}`)
+        } else {
+            return;
         }
     }
     render() {

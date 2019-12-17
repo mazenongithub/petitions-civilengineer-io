@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Noto+Serif:400,700i|Source+Sans+Pro:400,600&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif:400,700i|Source+Sans+Pro:400,600|Fjalla+One&display=swap');
 
 .App {
   text-align: center;
@@ -56,6 +56,15 @@ textarea.general-text{
   font-family: 'Noto Serif', serif;
   padding:10px;
   
+}
+.header-background{
+  background-color: #F7EEE7;
+  
+}
+.header-flex{
+  display:flex;
+  flex-direction: row;
+  font-family: 'Noto Serif', serif;
 }
 .double-grid{
   display:grid;
