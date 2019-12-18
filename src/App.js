@@ -11,7 +11,7 @@ import Landing from './components/landing'
 import Header from './components/header';
 import Profile from './components/profile';
 import * as actions from './components/actions';
-import { CheckUserLogin } from './components/actions/api';
+import { CheckUserLogin, LoadAllUsers } from './components/actions/api';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { firebaseConfig } from './components/firebase';
@@ -37,6 +37,11 @@ class App extends Component {
         }
       } else {
         this.props.reduxUser(myuser)
+        let response = await LoadAllUsers();
+        console.log(response)
+        if (response.hasOwnProperty("allusers")) {
+          this.props.reduxAllUsers(response.allusers)
+        }
       }
 
 
