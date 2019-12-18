@@ -36,7 +36,7 @@ class Landing extends Component {
                 <div className="flex-1 regularFont">
 
                     <div className="general-flex">
-                        <div className="flex-1 regularFont">
+                        <div className="flex-1 regularFont constrain-landing">
                             The Petitions App was created to defend your rights.
                             Easily Create a Petition. View Petitions. Support Petitions.
                             Comments to Support a petition.
@@ -44,7 +44,7 @@ class Landing extends Component {
                     </div>
 
                     <div className="general-flex">
-                        <div className="flex-1 regularFont">
+                        <div className="flex-1 regularFont constrain-landing">
                             Here is A List of the Most Recent Petitions. We need your support
                         </div>
                     </div>
@@ -149,15 +149,15 @@ class Landing extends Component {
     formatpetition(petition) {
 
         return (<div className="general-flex">
-            <div className="flex-1">
-                <Link to={`/users/viewpetition/${petition.petitionid}`} className="general-link">
+            <div className="flex-1 constrain-landing">
+                <Link to={`/petitions/${petition.petitionid}`} className="general-link">
                     <div className="regularFont alignCenter">
                         {`${process.env.REACT_APP_CLIENT_API}/petitions/${petition.petitionid}`}
                     </div>
-                    <div className="regularFont alignCenter">
+                    <div className="regularFont alignCenter constrain-landing">
                         {petition.petition}
                     </div>
-                    <div className="regularFont alignCenter">
+                    <div className="regularFont alignCenter constrain-landing">
                         by {this.getuserbypetitionid(petition.petitionid)}
                     </div>
                 </Link>

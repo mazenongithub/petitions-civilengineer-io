@@ -159,6 +159,10 @@ textarea.general-text{
 .alignRight{
   text-align: right;
 }
+.constrain-landing{
+  max-width:300px; 
+}
+
 .conflictarrow{
   width:43px;
   height:27px;
@@ -183,8 +187,25 @@ textarea.general-text{
   width:55px;
   height:55px;
 }
+@media screen and (min-width:400px) {
+  .constrain-landing{
+    max-width:400px;
+    margin:auto;
+  }
+    
+  }
+@media screen and (min-width:600px) {
+  .constrain-landing{
+    max-width:500px;
+  }
+    
+  }
 
 @media screen and (min-width:800px) {
+  .constrain-landing{
+    max-width:800px;
+    
+  }
   .picture-icon-container{
     width:91px;
     height:91px;
@@ -231,6 +252,10 @@ textarea.general-text{
   }
 }
 @media screen and (min-width:1200px) {
+  .constrain-landing{
+    max-width:800px;
+    
+  }
   .picture-icon-container{
     width:157px;
     height:157px;

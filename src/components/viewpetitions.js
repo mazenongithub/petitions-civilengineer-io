@@ -134,7 +134,7 @@ class ViewPetitions extends Component {
 
         return (<div className="general-flex">
             <div className="flex-1">
-                <Link to={`/users/viewpetition/${petition.petitionid}`} className="general-link">
+                <Link to={`/petitions/${petition.petitionid}`} className="general-link">
                     <div className="regularFont alignCenter">
                         {`${process.env.REACT_APP_CLIENT_API}/petitions/${petition.petitionid}`}
                     </div>
