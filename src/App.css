@@ -5,6 +5,7 @@
   height:0;
   cursor: pointer;
 }
+
 .profilepicture-icon{
   width:88px;
   height:55px;
@@ -161,6 +162,10 @@ textarea.general-text{
 .conflictarrow{
   width:43px;
   height:27px;
+}
+.login-link{
+  text-decoration: none;
+  color:#3A36DD;
 }
 .general-link{
   text-decoration: none;

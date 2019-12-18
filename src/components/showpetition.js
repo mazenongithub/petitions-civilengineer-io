@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { LoadAllUsers, SaveComments } from './actions/api';
 import { yesIcon, noIcon, emptyBox, submitIcon, removeIconSmall } from './svg';
 import { CreateLike, CreateComment, makeID, formatUTCDateforDisplay } from './functions';
+import { Link } from 'react-router-dom';
 class ShowPetition extends Component {
     constructor(props) {
         super(props)
@@ -671,6 +672,14 @@ class ShowPetition extends Component {
             this.setState({ activecommentid: commentid })
         }
     }
+    handleremoveicon(comment) {
+        let myuser = this.getuser();
+        if (myuser && (comment.userid === myuser.userid)) {
+            return (<button className="general-button remove-icon-small" onClick={() => this.removeComment(comment.commentid)}>
+                {removeIconSmall()}
+            </button>)
+        }
+    }
     showpetitioncomment(comment) {
         const user = this.getuserbycommentid(comment.commentid);
         const username = `${user.firstname} ${user.lastname}`
@@ -684,9 +693,7 @@ class ShowPetition extends Component {
                     {comment.comment}  <span className="alignLeft">by {username}</span>
                 </div>
                 <div className="flex-1">
-                    <button className="general-button remove-icon-small" onClick={() => this.removeComment(comment.commentid)}>
-                        {removeIconSmall()}
-                    </button>
+                    {this.handleremoveicon(comment)}
                 </div>
             </div>)
 
@@ -700,9 +707,7 @@ class ShowPetition extends Component {
                     {comment.comment}  <span className="alignLeft">by {username}</span>
                 </div>
                 <div className="flex-1">
-                    <button className="general-button remove-icon-small" onClick={() => this.removeComment(comment.commentid)}>
-                        {removeIconSmall()}
-                    </button>
+                    {this.handleremoveicon(comment)}
                 </div>
             </div>)
 
@@ -713,9 +718,7 @@ class ShowPetition extends Component {
                 </div>
                 <div className="flex-3 regularFont" onClick={() => { this.makecommentactive(comment.commentid) }}>
                     {comment.comment}  <span className="alignLeft">by {username} </span>
-                    <button className="general-button remove-icon-small addMarginLeft" onClick={() => this.removeComment(comment.commentid)}>
-                        {removeIconSmall()}
-                    </button>
+                    {this.handleremoveicon(comment)}
                 </div>
 
             </div>)
@@ -802,7 +805,11 @@ class ShowPetition extends Component {
                 </div>
             </div>)
         } else {
-            return;
+            return (<div className="general-flex">
+                <div className="flex-1 regularFont">
+                    <Link to={`/users/register`} className="login-link regularFont ">Login or Register to Support and Comment</Link>
+                </div>
+            </div>)
         }
     }
     render() {
