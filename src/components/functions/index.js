@@ -51,3 +51,136 @@ export function makeID(length) {
     }
     return result;
 }
+export function MyUser() {
+    let myuser = {
+        myuser: {
+            userid: "mazen",
+            firstname: "Mazen",
+            lastname: "Khenaisser",
+            gender: "male",
+            organization: "petitions.civilengineer.io",
+            emailaddress: "mazen@civilengineer.io",
+            profileurl: "https://goandhireme.s3-us-west-1.amazonaws.com/7AFWYmazen.jpg",
+            client: "apple",
+            clientid: "000353.66d2a1610de24944b898df602ab5e7a7.0305",
+            petitions: {
+                petition: [
+                    {
+                        petitionid: "updated id it doesnt matter",
+                        petition: "Arbitrationnnn",
+                        versus: "The Federal Bureau of Reclamationnn",
+                        conflicts: {
+                            conflict: [
+                                {
+                                    conflict: "My First Conflict Updated with Response and message",
+                                    conflictid: "xxxxyyyyzzzzwwww",
+                                    arguements: {
+                                        arguement: [
+                                            {
+                                                arguementid: "ppppiiiieeeessss",
+                                                arguement: "They did this so they can lie and be left unaccoutable for how I was treated in the work place."
+                                            },
+                                            {
+                                                arguementid: "H35ZQXAUR4IZPDA5",
+                                                arguement: "Arguement 2 is now updated"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    conflict: "Conflict 2",
+                                    conflictid: "K5YDV4ZL6UF5OH9B"
+                                }
+                            ]
+                        },
+                        likes: {
+                            like: [
+                                {
+                                    likeid: "V29PS2AB6K3SNUJ4",
+                                    like: "support",
+                                    userid: "mazen"
+                                }
+                            ]
+                        },
+                        comments: {
+                            comment: [
+                                {
+                                    commentid: "K4JCUBCZCIQRA19L",
+                                    comment: "Go and Get it",
+                                    userid: "mazen"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            allusers: {
+                myuser: [
+                    {
+                        userid: "mazen",
+                        firstname: "Mazen",
+                        lastname: "Khenaisser",
+                        gender: "male",
+                        organization: "petitions.civilengineer.io",
+                        emailaddress: "mazen@civilengineer.io",
+                        profileurl: "https://goandhireme.s3-us-west-1.amazonaws.com/7AFWYmazen.jpg",
+                        client: "apple",
+                        clientid: "000353.66d2a1610de24944b898df602ab5e7a7.0305",
+                        petitions: {
+                            petition: [
+                                {
+                                    petitionid: "updated id it doesnt matter",
+                                    petition: "Arbitrationnnn",
+                                    versus: "The Federal Bureau of Reclamationnn",
+                                    conflicts: {
+                                        conflict: [
+                                            {
+                                                conflict: "My First Conflict Updated with Response and message",
+                                                conflictid: "xxxxyyyyzzzzwwww",
+                                                arguements: {
+                                                    arguement: [
+                                                        {
+                                                            arguementid: "ppppiiiieeeessss",
+                                                            arguement: "They did this so they can lie and be left unaccoutable for how I was treated in the work place."
+                                                        },
+                                                        {
+                                                            arguementid: "H35ZQXAUR4IZPDA5",
+                                                            arguement: "Arguement 2 is now updated"
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                conflict: "Conflict 2",
+                                                conflictid: "K5YDV4ZL6UF5OH9B"
+                                            }
+                                        ]
+                                    },
+                                    likes: {
+                                        like: [
+                                            {
+                                                likeid: "V29PS2AB6K3SNUJ4",
+                                                like: "support",
+                                                userid: "mazen"
+                                            }
+                                        ]
+                                    },
+                                    comments: {
+                                        comment: [
+                                            {
+                                                commentid: "K4JCUBCZCIQRA19L",
+                                                comment: "Go and Get it",
+                                                userid: "mazen"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    }
+    return myuser.myuser
+}

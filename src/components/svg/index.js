@@ -22,6 +22,9 @@ export function RegisterNowIcon() {
 export function submitIcon() {
     return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 316.4 97.07"><defs><style></style></defs><title>submiticon</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect className="submiticon-1" x="1" y="1" width="314.4" height="95.07" rx="8.77" /><text className="submiticon-2" transform="translate(73.66 64.64)">Submit</text></g></g></svg>)
 }
+export function cameraIcon() {
+    return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89.34 66.52"><defs><style></style></defs><title>camericon</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect className="cameraicon-1" x="63.72" y="0.5" width="17.32" height="10.4" rx="1.07" /><path className="cameraicon-2" d="M80.35,10.9H9A8.62,8.62,0,0,0,.5,19.65V57.26A8.63,8.63,0,0,0,9,66H80.35a8.63,8.63,0,0,0,8.49-8.76V19.65A8.62,8.62,0,0,0,80.35,10.9ZM50.83,57.54a17.22,17.22,0,0,1-17.46-17,17.47,17.47,0,0,1,34.92,0A17.22,17.22,0,0,1,50.83,57.54Z" /><ellipse className="cameraicon-3" cx="50.83" cy="41.64" rx="16.43" ry="14.84" /></g></g></svg>)
+}
 export function emptyBox() {
     return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 100"><defs><style></style></defs><title>emptybox</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect className="emptybox-1" x="2" y="2" width="121" height="96" /></g></g></svg>)
 }

@@ -11,10 +11,11 @@ import Landing from './components/landing'
 import Header from './components/header';
 import Profile from './components/profile';
 import * as actions from './components/actions';
-import { CheckUserLogin, LoadAllUsers } from './components/actions/api';
+import { LoadAllUsers, CheckUserLogin } from './components/actions/api';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { firebaseConfig } from './components/firebase';
+//import { MyUser } from './components/functions';
 
 
 
@@ -29,6 +30,7 @@ class App extends Component {
   async checkuser() {
     try {
       let myuser = await CheckUserLogin();
+      //let myuser = MyUser()
       console.log(myuser)
       if (myuser.hasOwnProperty("myuser")) {
         this.props.reduxUser(myuser.myuser)

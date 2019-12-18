@@ -1,5 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Serif:400,700i|Source+Sans+Pro:400,600|Fjalla+One&display=swap');
-
+.no-display {
+  visibility:hidden;
+  width:0;
+  height:0;
+  cursor: pointer;
+}
+.profilepicture-icon{
+  width:88px;
+  height:55px;
+}
 .App {
   text-align: center;
 }

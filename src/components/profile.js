@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import * as actions from './actions';
 import { connect } from 'react-redux';
-import { radioOpen, radioClosed, saveAllPetitionsIcon } from './svg';
-import { formatUTCDateforDisplay } from './functions';
+import { radioOpen, radioClosed, saveAllPetitionsIcon, cameraIcon } from './svg';
+import { formatUTCDateforDisplay, } from './functions';
 import { Link } from 'react-router-dom';
-import { SavePetitions } from './actions/api';
+import { SavePetitions, UploadProfileImage } from './actions/api';
 class Profile extends Component {
     constructor(props) {
         super(props);
@@ -99,6 +99,29 @@ class Profile extends Component {
             </div>
         </div>)
     }
+    async uploadprofileimage() {
+        let myuser = this.getuser();
+
+        if (myuser) {
+            let formData = new FormData();
+            let userid = myuser.userid;
+
+            let myfile = document.getElementById("uploadprofileimage");
+            // HTML file input, chosen by user
+
+            formData.append("profilephoto", myfile.files[0]);
+            formData.append("myuser", JSON.stringify(myuser));
+
+            let response = await UploadProfileImage(formData, userid);
+            console.log(response)
+            if (response.response.hasOwnProperty("myuser")) {
+                this.props.reduxUser(response.response.myuser)
+                this.setState({ message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+            }
+        }
+
+
+    }
     responsivelayout() {
 
         if (this.state.width > 800) {
@@ -145,6 +168,25 @@ class Profile extends Component {
                                 Organization <br />
                                 <input type="text" className="general-field regularFont" value={this.getorganization()} onChange={event => { this.handleorganization(event.target.value) }} />
                             </div>
+                            <div className="flex-1  regularFont">
+
+
+                                <div className="general-flex">
+                                    <div className="flex-2  regularFont showBorder">
+                                        Profile URL  <input type="file" name="profileimage" id="uploadprofileimage" /> <br />
+                                    </div>
+                                    <div className="flex-1 regularFont showBorder">
+                                        <button className="profilepicture-icon general-button" onClick={() => { this.uploadprofileimage() }}>{cameraIcon()}</button>
+
+                                    </div>
+                                </div>
+                                <div className="general-container regularFont">
+                                    <input type="text" value={this.getprofileurl()} onChange={event => this.handleprofileurl(event.target.value)} className="general-field regularFont" />
+                                </div>
+
+
+                            </div>
+
 
                         </div>
 
@@ -216,6 +258,17 @@ class Profile extends Component {
                                     <input type="text" value={this.getorganization()} onChange={event => { this.handleorganization(event.target.value) }} className="general-field regularFont" />
                                 </div>
 
+                                <div className="general-container showBorder regularFont">
+                                    Profile URL <br />
+
+                                    <button className="profilepicture-icon general-button" onClick={() => { this.uploadprofileimage() }}>{cameraIcon()}</button>
+                                    <input type="file" id="uploadprofileimage" />
+                                </div>
+
+                                <div className="general-container regularFont">
+                                    <input type="text" onChange={event => this.handleprofileurl(event.target.value)} value={this.getprofileurl()} className="general-field regularFont" />
+                                </div>
+
 
 
                                 <div className="general-container regularFont alignCenter">
@@ -246,7 +299,7 @@ class Profile extends Component {
             myuser = this.props.myusermodel;
 
         }
-        console.log(myuser)
+
 
         return myuser;
     }
@@ -294,6 +347,17 @@ class Profile extends Component {
         myuser.emailaddress = emailaddress;
         this.props.reduxUser(myuser);
         this.setState({ render: 'render' })
+    }
+    getprofileurl() {
+        let myuser = this.getuser();
+        return myuser.profileurl
+    }
+    handleprofileurl(profileurl) {
+        let myuser = this.getuser();
+        myuser.profileurl = profileurl;
+        this.props.reduxUser(myuser);
+        this.setState({ render: 'render' })
+
     }
 
     handleradiomale() {

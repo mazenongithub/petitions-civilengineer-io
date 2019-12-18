@@ -114,6 +114,35 @@ export async function LoadAllUsers() {
         return resp.json();
     })
 }
+
+export async function UploadProfileImage(formdata, userid) {
+
+
+    var APIURL = `${process.env.REACT_APP_SERVER_API}/${userid}/uploadprofileimage`
+
+    return fetch(APIURL, {
+        method: 'post',
+        credentials: 'include',
+        body: formdata
+    })
+        .then(resp => {
+
+            if (!resp.ok) {
+                if (resp.status >= 400 && resp.status < 500) {
+                    return resp.json().then(data => {
+                        let err = { errorMessage: data.message };
+                        throw err;
+                    })
+                }
+                else {
+                    let err = { errorMessage: 'Please try again later, server is not responding' };
+                    throw err;
+                }
+            }
+
+            return resp.json();
+        })
+}
 export async function CheckUserLogin() {
 
     let APIURL = `${process.env.REACT_APP_SERVER_API}/users/checkuser`

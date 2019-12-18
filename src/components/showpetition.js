@@ -677,7 +677,7 @@ class ShowPetition extends Component {
         if (this.state.width > 1200) {
             return (<div className="general-flex" key={comment.commentid}>
                 <div className="flex-1">
-                    <div className="picture-icon-container showBorder">&nbsp;</div>
+                    <div className="picture-icon-container showBorder"><img src={user.profileurl} alt={`${user.firstname} ${user.lastname}`} className="picture-icon-container" /></div>
                 </div>
                 <div className="flex-4 regularFont" onClick={() => { this.makecommentactive(comment.commentid) }}>
 
@@ -693,7 +693,7 @@ class ShowPetition extends Component {
         } else if (this.state.width > 800) {
             return (<div className="general-flex" key={comment.commentid}>
                 <div className="flex-1">
-                    <div className="picture-icon-container showBorder">&nbsp;</div>
+                    <div className="picture-icon-container showBorder"><img src={user.profileurl} alt={`${user.firstname} ${user.lastname}`} className="picture-icon-container" /></div>
                 </div>
                 <div className="flex-5 regularFont" onClick={() => { this.makecommentactive(comment.commentid) }}>
 
@@ -709,7 +709,7 @@ class ShowPetition extends Component {
         } else {
             return (<div className="general-flex" key={comment.commentid}>
                 <div className="flex-1">
-                    <div className="picture-icon-container showBorder">&nbsp;</div>
+                    <div className="picture-icon-container showBorder"><img src={user.profileurl} alt={`${user.firstname} ${user.lastname}`} className="picture-icon-container" /> </div>
                 </div>
                 <div className="flex-3 regularFont" onClick={() => { this.makecommentactive(comment.commentid) }}>
                     {comment.comment}  <span className="alignLeft">by {username} </span>
