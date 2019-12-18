@@ -509,70 +509,74 @@ class ShowPetition extends Component {
 
     }
     petitioncommentbox() {
-        if (this.state.width > 1200) {
-            return (
-                <div className="general-flex">
-                    <div className="flex-1 regularFont">
+        if (this.getuser()) {
+            if (this.state.width > 1200) {
+                return (
+                    <div className="general-flex">
+                        <div className="flex-1 regularFont">
 
-                        <div className="general-flex">
-                            <div className="flex-1 regularFont">
-                                Comments
+                            <div className="general-flex">
+                                <div className="flex-1 regularFont">
+                                    Comments
                 </div>
-                            <div className="flex-6 regularFont">
-                                <textarea className="general-field regularFont general-text"
-                                    onChange={event => { this.handleComment(event.target.value) }}
-                                    value={this.getcomment()}>
-                                </textarea>
-                            </div>
-                        </div>
-
-                        <div className="general-flex">
-                            <div className="flex-3 regularFont">
-                                {this.state.message}
-                            </div>
-                            <div className="flex-1 alignRight">
-
-                                <button className="submit-button general-button" onClick={() => { this.submitcomments() }}>{submitIcon()}</button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>)
-        } else {
-            return (
-                <div className="general-flex">
-                    <div className='flex-1'>
-
-                        <div className="general-flex">
-                            <div className='flex-1'>
-                                <div className='general-container regularFont'> Comments</div>
-                                <div className='general-container regularFont'>
+                                <div className="flex-6 regularFont">
                                     <textarea className="general-field regularFont general-text"
                                         onChange={event => { this.handleComment(event.target.value) }}
                                         value={this.getcomment()}>
-                                        <div className="general-container">{this.getcomment()}</div>
                                     </textarea>
                                 </div>
+                            </div>
 
-                                <div className="general-flex">
-                                    <div className="flex-2 regularFont">
-                                        {this.state.message}
-                                    </div>
-                                    <div className="flex-1 alignRight">
-
-                                        <button className="submit-button general-button" onClick={() => { this.submitcomments() }}>{submitIcon()}</button>
-                                    </div>
+                            <div className="general-flex">
+                                <div className="flex-3 regularFont">
+                                    {this.state.message}
                                 </div>
+                                <div className="flex-1 alignRight">
 
+                                    <button className="submit-button general-button" onClick={() => { this.submitcomments() }}>{submitIcon()}</button>
+                                </div>
                             </div>
 
                         </div>
+                    </div>)
+            } else {
+                return (
+                    <div className="general-flex">
+                        <div className='flex-1'>
+
+                            <div className="general-flex">
+                                <div className='flex-1'>
+                                    <div className='general-container regularFont'> Comments</div>
+                                    <div className='general-container regularFont'>
+                                        <textarea className="general-field regularFont general-text"
+                                            onChange={event => { this.handleComment(event.target.value) }}
+                                            value={this.getcomment()}>
+                                            <div className="general-container">{this.getcomment()}</div>
+                                        </textarea>
+                                    </div>
+
+                                    <div className="general-flex">
+                                        <div className="flex-2 regularFont">
+                                            {this.state.message}
+                                        </div>
+                                        <div className="flex-1 alignRight">
+
+                                            <button className="submit-button general-button" onClick={() => { this.submitcomments() }}>{submitIcon()}</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
-
-                </div>
-            )
+                )
 
 
+            }
+        } else {
+            return;
         }
     }
     getcommentkeybyid(commentid) {
@@ -768,6 +772,39 @@ class ShowPetition extends Component {
         }
         return message;
     }
+    getuser() {
+        let myuser = false;
+        if (this.props.myusermodel.userid) {
+
+
+            myuser = this.props.myusermodel;
+
+        }
+
+
+        return myuser;
+    }
+    showlikebuttons() {
+        if (this.getuser()) {
+            return (<div className="general-flex">
+                <div className="flex-1 regularFont">
+                    <button onClick={event => { this.handleyes() }} className="general-button selection-box">
+                        {this.handleyesicon()}
+                    </button>
+                    <span className='addLeftMargin'>Support</span>
+                </div>
+                <div className="flex-1 regularFont">
+
+                    <button onClick={event => { this.handleno() }} className="general-button selection-box">
+                        {this.handlenoicon()}
+                    </button>
+                    <span className='addLeftMargin'> Against</span>
+                </div>
+            </div>)
+        } else {
+            return;
+        }
+    }
     render() {
 
         const petition = this.getpetition();
@@ -796,21 +833,7 @@ class ShowPetition extends Component {
                     </div>
 
                     {this.showpetition()}
-                    <div className="general-flex">
-                        <div className="flex-1 regularFont">
-                            <button onClick={event => { this.handleyes() }} className="general-button selection-box">
-                                {this.handleyesicon()}
-                            </button>
-                            <span className='addLeftMargin'>Support</span>
-                        </div>
-                        <div className="flex-1 regularFont">
-
-                            <button onClick={event => { this.handleno() }} className="general-button selection-box">
-                                {this.handlenoicon()}
-                            </button>
-                            <span className='addLeftMargin'> Against</span>
-                        </div>
-                    </div>
+                    {this.showlikebuttons()}
                     <div className="general-container regularFont">
                         {this.petitionlikemessage()}
                     </div>
