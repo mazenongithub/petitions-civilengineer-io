@@ -1123,8 +1123,12 @@ class Petitions extends Component {
                 let response = await SavePetitions({ myuser });
                 console.log(response)
                 if (response.response.hasOwnProperty("myuser")) {
-                    this.props.reduxUser(response.response.myuser)
+                    myuser = response.response.myuser
+                    this.props.reduxUser(myuser)
                     this.setState({ message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                    if (myuser.hasOwnProperty("allusers")) {
+                        this.props.reduxAllUsers(myuser.allusers)
+                    }
                 }
             }
         } catch (err) {
@@ -1179,7 +1183,8 @@ class Petitions extends Component {
 
 function mapStateToProps(state) {
     return {
-        myusermodel: state.myusermodel
+        myusermodel: state.myusermodel,
+        allusers: state.allusers
     }
 }
 

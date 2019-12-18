@@ -54,6 +54,10 @@ class Profile extends Component {
                 if (response.response.hasOwnProperty("myuser")) {
                     this.props.reduxUser(response.response.myuser)
                     this.setState({ message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                    if (myuser.hasOwnProperty("allusers")) {
+                        this.props.reduxAllUsers(myuser.allusers)
+                    }
+
                 }
             }
         } catch (err) {
