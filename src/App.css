@@ -25,10 +25,15 @@
 .showBorder{
   border:1px solid;
 }
+.addLeftMargin{
+  margin-left:20px;
+}
 .noBorder{
   border:0
 }
-
+.conflict-text{
+  height:165px;
+}
 textarea.general-text{
   font-family: 'Noto Serif', serif;
 }
@@ -187,21 +192,32 @@ textarea.general-text{
   width:55px;
   height:55px;
 }
+.addLeftMargin{
+  margin-left:20px;
+}
+
 @media screen and (min-width:400px) {
   .constrain-landing{
     max-width:400px;
     margin:auto;
   }
+
     
   }
 @media screen and (min-width:600px) {
   .constrain-landing{
     max-width:500px;
   }
+  .addLeftMargin{
+    margin-left:30px;
+  }
     
   }
 
 @media screen and (min-width:800px) {
+  .addLeftMargin{
+    margin-left:40px;
+  }
   .constrain-landing{
     max-width:800px;
     

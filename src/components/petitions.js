@@ -176,13 +176,11 @@ class Petitions extends Component {
         if (activepetitionid) {
 
             let petition = this.getpetitionbyid(activepetitionid)
-            console.log(petition)
+
             if (petition.hasOwnProperty("conflicts")) {
                 conflictid = petition.conflicts.conflict[0].conflictid;
             }
 
-        } else {
-            console.log(activepetitionid)
         }
         return conflictid;
     }
@@ -408,7 +406,7 @@ class Petitions extends Component {
 
                         myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].arguement = arguement
                         this.props.reduxUser(myuser);
-                        this.setState({ render: 'render' })
+                        this.setState({ arguement: '' })
 
                     } else {
                         this.setState({ arguement })
@@ -482,7 +480,7 @@ class Petitions extends Component {
                     let j = this.getactiveconflictposition();
                     myuser.petitions.petition[i].conflicts.conflict[j].conflict = conflict;
                     this.props.reduxUser(myuser);
-                    this.setState({ render: 'render' })
+                    this.setState({ conflict: '' })
 
                 } else {
 
@@ -509,7 +507,17 @@ class Petitions extends Component {
         if (this.state.activearguementid) {
             return (this.getactivearguementposition() + 1)
         } else {
-            return (0)
+            if (this.state.activeconflictid) {
+                let conflict = this.getactiveconflict();
+                if (conflict.hasOwnProperty("arguements")) {
+                    return (conflict.arguements.arguement.length + 1)
+                } else {
+                    return (1)
+                }
+            } else {
+                return (1)
+            }
+
         }
 
 
@@ -555,7 +563,7 @@ class Petitions extends Component {
                         <div className="general-flex">
                             <div className="flex-1 noBorder">
 
-                                <input type="text" value={this.getarguement()} onChange={event => { this.handleArguement(event.target.value) }} className="general-field regularFont" />
+                                <textarea className="conflict-text general-text general-field regularFont" value={this.getarguement()} onChange={event => { this.handleArguement(event.target.value) }}></textarea>
                             </div>
                         </div>
 
@@ -618,12 +626,22 @@ class Petitions extends Component {
         }
         return position;
     }
-    handeactiveconflictposition() {
+    handleactiveconflictposition() {
         if (this.state.activeconflictid) {
             return (this.getactiveconflictposition() + 1)
 
         } else {
-            return (0);
+
+            if (this.state.activepetitionid) {
+
+                let petition = this.getactivepetition();
+                if (petition.hasOwnProperty("conflicts")) {
+                    return (petition.conflicts.conflict.length + 1)
+                }
+            } else {
+                return (1);
+            }
+
         }
 
     }
@@ -895,7 +913,7 @@ class Petitions extends Component {
                                                 </button>
                                             </div>
                                             <div className="flex-1 noBorder titleFont alignCenter">
-                                                {this.handeactiveconflictposition()}
+                                                {this.handleactiveconflictposition()}
                                             </div>
                                             <div className="flex-1 noBorder alignRight">
                                                 <button className="general-button conflictarrow" onClick={() => { this.scrollconflictup() }}>
@@ -911,7 +929,7 @@ class Petitions extends Component {
                         <div className="general-flex">
                             <div className="flex-1 noBorder">
 
-                                <input type="text" value={this.getconflict()} onChange={event => { this.handleConflict(event.target.value) }} className="general-field regularFont" />
+                                <textarea className="conflict-text general-text general-field regularFont" value={this.getconflict()} onChange={event => { this.handleConflict(event.target.value) }} ></textarea>
                             </div>
                         </div>
 
@@ -929,7 +947,7 @@ class Petitions extends Component {
                                         </button>
                                     </div>
                                     <div className="flex-1 noBorder titleFont alignCenter">
-                                        {this.handeactiveconflictposition()}
+                                        {this.handleactiveconflictposition()}
                                     </div>
                                     <div className="regularFont flex-1 noBorder alignRight">
                                         <button className="general-button conflictarrow" onClick={() => { this.reorderconflictup() }}>
@@ -1028,7 +1046,7 @@ class Petitions extends Component {
 
                 let i = this.getactivepetitionposition();
                 let j = this.getconflictpositionbyid(conflictid);
-                console.log("REMOVECONFLICT", i, j)
+
                 myuser.petitions.petition[i].conflicts.conflict.splice(j, 1);
                 this.props.reduxUser(myuser);
                 this.setState({ activearguementid: "", activeconflictid: "" })
@@ -1056,10 +1074,15 @@ class Petitions extends Component {
         let position = 0;
         if (this.state.activeconflictid) {
             let conflict = this.getactiveconflict();
+
             if (conflict.hasOwnProperty("arguements")) {
+
+
                 // eslint-disable-next-line
                 conflict.arguements.arguement.map((arguement, i) => {
+
                     if (arguement.arguementid === arguementid) {
+
                         position = i;
                     }
                 })
@@ -1075,6 +1098,7 @@ class Petitions extends Component {
                     let i = this.getactivepetitionposition();
                     let j = this.getactiveconflictposition();
                     let k = this.getarguementpositionbyid(arguementid);
+
                     myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement.splice(k, 1);
                     this.props.reduxUser(myuser);
 
@@ -1087,9 +1111,9 @@ class Petitions extends Component {
     }
     showpetitionarguement(arguement, i) {
 
-        return (<div className="general-flex" onClick={() => { this.makearguementactive(arguement.arguementid) }}>
+        return (<div className="general-flex addLeftMargin" onClick={() => { this.makearguementactive(arguement.arguementid) }}>
             <div className="flex-1">
-                <span className="titleFont">Arguement#{i + 1}</span> <span className={`regularFont ${this.getactivearguementdisplay(arguement.arguementid)}`}>{arguement.arguement}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => { this.removeArguement(arguement.argumentid) }}>{removeIconSmall()}</button></span>
+                <span className="titleFont">Arguement#{i + 1}</span> <span className={`regularFont ${this.getactivearguementdisplay(arguement.arguementid)}`}>{arguement.arguement}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => { this.removeArguement(arguement.arguementid) }}>{removeIconSmall()}</button></span>
             </div>
         </div>)
     }
@@ -1119,7 +1143,7 @@ class Petitions extends Component {
         try {
             if (this.props.myusermodel) {
                 let myuser = this.props.myusermodel;
-                console.log(myuser)
+
                 let response = await SavePetitions({ myuser });
                 console.log(response)
                 if (response.response.hasOwnProperty("myuser")) {
@@ -1156,8 +1180,9 @@ class Petitions extends Component {
                     </div>
                 </div>
                 {this.showconflicts()}
-                {this.showpetition()}
+
                 {this.showarguements()}
+                {this.showpetition()}
 
                 <div className="general-flex">
                     <div className="flex-1">
