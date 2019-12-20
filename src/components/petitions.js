@@ -426,6 +426,8 @@ class Petitions extends Component {
 
 
                     }
+                } else {
+                    alert('You need an Active Conflict to make an arguement ')
                 }
             }
         }
