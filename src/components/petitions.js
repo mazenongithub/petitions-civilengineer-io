@@ -41,7 +41,7 @@ class Petitions extends Component {
     }
 
     getmyuser() {
-        let myusermodel = {};
+        let myusermodel = false;
         if (this.props.myusermodel) {
             if (this.props.myusermodel.hasOwnProperty("userid")) {
                 myusermodel = this.props.myusermodel;
@@ -260,7 +260,7 @@ class Petitions extends Component {
     }
     showpetitionmedium(petition) {
         return (
-            <div className="double-grid-container">
+            <div className="double-grid-container" key={petition.petitionid}>
                 <div className="general-flex">
                     <div className="flex-1 noBorder alignCenter">
                         <button className="general-button showpetitionicon" onClick={event => { this.makepetitionactive(petition.petitionid) }}>
@@ -334,7 +334,7 @@ class Petitions extends Component {
                 if (this.state.width > 400) {
 
                     if (petitions.petition.length % 2 !== 0) {
-                        petitionslarge.push(<div className="double-grid-container noBorder">&nbsp;</div>)
+                        petitionslarge.push(<div className="double-grid-container noBorder" key={'petitions-blank'}>&nbsp;</div>)
                     }
 
                     return (<div className="double-grid general-container">
@@ -1071,7 +1071,7 @@ class Petitions extends Component {
 
     }
     showpetitionconflict(conflict, seq) {
-        return (<div className="general-flex" onClick={event => { this.makeconflictactive(conflict.conflictid) }}>
+        return (<div className="general-flex" onClick={event => { this.makeconflictactive(conflict.conflictid) }} key={`${seq}${conflict.conflictid}`}>
             <div className={`flex-1`}>
                 <span className="titleFont">Conflict#{seq + 1}</span><span className={`regularFont ${this.getactiveconflictdisplay(conflict.conflictid)}`}>{conflict.conflict}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => this.removeConflict(conflict.conflictid)}>{removeIconSmall()}</button></span>
             </div>
@@ -1079,11 +1079,28 @@ class Petitions extends Component {
 
     }
     makearguementactive(arguementid) {
+
+
+
         if (this.state.activearguementid !== arguementid) {
-            this.setState({ activearguementid: arguementid })
+            let petition = this.getactivepetition()
+            let arguementkeys = this.getarguementkeysbyid(arguementid)
+
+            let j = arguementkeys[0];
+
+            let activeconflictid = false;
+
+            if (petition.hasOwnProperty("conflicts")) {
+
+                activeconflictid = petition.conflicts.conflict[j].conflictid;
+                this.setState({ activearguementid: arguementid, activeconflictid })
+            }
+
+
         } else {
             this.setState({ activearguementid: false })
         }
+
     }
     getarguementkeysbyid(arguementid) {
         let key = [];
@@ -1135,7 +1152,7 @@ class Petitions extends Component {
     }
     showpetitionarguement(arguement, i) {
 
-        return (<div className="general-flex addLeftMargin" onClick={() => { this.makearguementactive(arguement.arguementid) }}>
+        return (<div className="general-flex addLeftMargin" onClick={() => { this.makearguementactive(arguement.arguementid) }} key={`${i}${arguement.arguementid}`}>
             <div className="flex-1">
                 <span className="titleFont">Arguement#{i + 1}</span> <span className={`regularFont ${this.getactivearguementdisplay(arguement.arguementid)}`}>{arguement.arguement}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => { this.removeArguement(arguement.arguementid) }}>{removeIconSmall()}</button></span>
             </div>

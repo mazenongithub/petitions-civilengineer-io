@@ -148,7 +148,7 @@ class Landing extends Component {
     }
     formatpetition(petition) {
 
-        return (<div className="general-flex">
+        return (<div className="general-flex" key={petition.petitionid}>
             <div className="flex-1 constrain-landing">
                 <Link to={`/petitions/${petition.petitionid}`} className="general-link">
                     <div className="regularFont alignCenter">
