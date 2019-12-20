@@ -681,9 +681,16 @@ class Petitions extends Component {
     }
     firstarguementfromconflictid(conflictid) {
         let conflict = this.getconflictfromid(conflictid);
-        let arguement = {};
+        let arguement = false;
         if (conflict.hasOwnProperty("arguements")) {
-            arguement = conflict.arguements.arguement[0];
+            if (conflict.arguements.hasOwnProperty('arguement')) {
+                if (conflict.arguements.arguement.length > 0) {
+                    arguement = conflict.arguements.arguement[0];
+                }
+
+
+            }
+
         }
         return arguement;
     }
@@ -698,7 +705,11 @@ class Petitions extends Component {
 
                         i = i + 1;
                         let activeconflictid = this.getconflictidbyposition(i);
-                        let activearguementid = this.firstarguementfromconflictid(activeconflictid).arguementid;
+                        let activearguement = this.firstarguementfromconflictid(activeconflictid);
+                        let activearguementid = false;
+                        if (activearguement) {
+                            activearguementid = activearguement.activearguementid;
+                        }
                         this.setState({ activeconflictid, activearguementid })
                     }
 
@@ -1048,6 +1059,10 @@ class Petitions extends Component {
                 let j = this.getconflictpositionbyid(conflictid);
 
                 myuser.petitions.petition[i].conflicts.conflict.splice(j, 1);
+                if (myuser.petitions.petition[i].conflicts.conflict.length === 0) {
+                    delete myuser.petitions.petition[i].conflicts.conflict;
+                    delete myuser.petitions.petition[i].conflicts;
+                }
                 this.props.reduxUser(myuser);
                 this.setState({ activearguementid: "", activeconflictid: "" })
 
@@ -1070,36 +1085,45 @@ class Petitions extends Component {
             this.setState({ activearguementid: false })
         }
     }
-    getarguementpositionbyid(arguementid) {
-        let position = 0;
-        if (this.state.activeconflictid) {
-            let conflict = this.getactiveconflict();
-
-            if (conflict.hasOwnProperty("arguements")) {
-
-
+    getarguementkeysbyid(arguementid) {
+        let key = [];
+        if (this.state.activepetitionid) {
+            let petition = this.getactivepetition();
+            if (petition.hasOwnProperty("conflicts")) {
                 // eslint-disable-next-line
-                conflict.arguements.arguement.map((arguement, i) => {
+                petition.conflicts.conflict.map((conflict, i) => {
+                    if (conflict.hasOwnProperty("arguements")) {
+                        // eslint-disable-next-line
+                        conflict.arguements.arguement.map((arguement, j) => {
+                            if (arguement.arguementid === arguementid) {
+                                key[1] = j;
+                                key[0] = i;
 
-                    if (arguement.arguementid === arguementid) {
-
-                        position = i;
+                            }
+                        })
                     }
                 })
             }
         }
-        return position;
+
+        return key;
     }
+
     removeArguement(arguementid) {
         if (window.confirm('Press ok then Save to permenantly erase arguement')) {
             if (this.props.myusermodel) {
                 let myuser = this.props.myusermodel;
                 if (this.state.activepetitionid) {
                     let i = this.getactivepetitionposition();
-                    let j = this.getactiveconflictposition();
-                    let k = this.getarguementpositionbyid(arguementid);
+                    let arguementkeys = this.getarguementkeysbyid(arguementid)
+                    let j = arguementkeys[0];
+                    let k = arguementkeys[1];
 
                     myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement.splice(k, 1);
+                    if (myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement.length === 0) {
+                        delete myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement;
+                        delete myuser.petitions.petition[i].conflicts.conflict[j].arguements;
+                    }
                     this.props.reduxUser(myuser);
 
                     this.setState({ activearguementid: false })

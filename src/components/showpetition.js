@@ -87,7 +87,7 @@ class ShowPetition extends Component {
     }
     showpetitionarguement(arguement, i) {
 
-        return (<div className="general-flex" key={arguement.arguementid}>
+        return (<div className="general-flex addLeftMargin" key={arguement.arguementid}>
             <div className="flex-1">
                 <span className="titleFont">Arguement#{i + 1}</span> <span className={`regularFont`}>{arguement.arguement}</span>
             </div>
@@ -521,7 +521,7 @@ class ShowPetition extends Component {
                                     Comments
                 </div>
                                 <div className="flex-6 regularFont">
-                                    <textarea className="general-field regularFont general-text"
+                                    <textarea className="conflict-text general-field regularFont general-text"
                                         onChange={event => { this.handleComment(event.target.value) }}
                                         value={this.getcomment()}>
                                     </textarea>
