@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
 import { LoadAllUsers, SaveComments } from './actions/api';
-import { yesIcon, noIcon, emptyBox, submitIcon, removeIconSmall } from './svg';
+import { yesIcon, noIcon, emptyBox, submitIcon, removeIconSmall, hideImageIcon, showImageIcon } from './svg';
 import { CreateLike, CreateComment, makeID, formatUTCDateforDisplay } from './functions';
 import { Link } from 'react-router-dom';
 class ShowPetition extends Component {
@@ -77,21 +77,280 @@ class ShowPetition extends Component {
         }
         return petitions;
     }
+    showarguementsbyconflict(conflict) {
+        let arguements = [];
+        if (conflict.hasOwnProperty("arguements")) {
+            // eslint-disable-next-line
+            conflict.arguements.arguement.map((arguement, i) => {
+                arguements.push(this.showpetitionarguement(arguement, i))
+            })
+
+        }
+        return arguements;
+    }
+    getconflictimagekeybyid(imageid) {
+        let keys = [];
+        let petition = this.getpetition();
+        if (petition.hasOwnProperty("conflicts")) {
+            // eslint-disable-next-line
+            petition.conflicts.conflict.map((conflict, i) => {
+                if (conflict.hasOwnProperty("images")) {
+                    // eslint-disable-next-line
+                    conflict.images.image.map((image, j) => {
+                        if (image.imageid === imageid) {
+                            keys[0] = i;
+                            keys[1] = j;
+                        }
+                    })
+                }
+            })
+        }
+        return keys;
+    }
+    checkconflictdisplay(imageid) {
+        let checkconflictdisplay = true;
+        if (this.props.allusers) {
+            let imagekeys = this.getconflictimagekeybyid(imageid);
+            let petition = this.getpetition();
+            let i = imagekeys[0];
+            let j = imagekeys[1];
+            let image = petition.conflicts.conflict[i].images.image[j];
+            if (image.hasOwnProperty("display")) {
+                checkconflictdisplay = petition.conflicts.conflict[i].images.image[j].display;
+
+            }
+        }
+        return checkconflictdisplay;
+
+    }
+    handleshowconflictimage(image) {
+        let checkconflictdisplay = this.checkconflictdisplay(image.imageid);
+
+        if (checkconflictdisplay) {
+            return (<div className="general-container alignCenter">
+                <img src={image.image} alt="conflict" className="conflict-image" />
+            </div>)
+        } else {
+            return;
+        }
+
+    }
+    hideconflictimage(imageid) {
+        if (this.props.allusers) {
+            let allusers = this.props.allusers;
+            let userkeys = this.getuserkeysfrompetition();
+            let imagekeys = this.getconflictimagekeybyid(imageid);
+            let i = userkeys[0];
+            let j = userkeys[1];
+            let k = imagekeys[0];
+            let l = imagekeys[1];
+            let checkconflicdisplay = this.checkconflictdisplay(imageid);
+            if (checkconflicdisplay) {
+                allusers.myuser[i].petitions.petition[j].conflicts.conflict[k].images.image[l].display = false;
+            } else {
+                allusers.myuser[i].petitions.petition[j].conflicts.conflict[k].images.image[l].display = true;
+            }
+            this.props.reduxAllUsers(allusers);
+            this.setState({ render: 'render' })
+        }
+    }
+    handleshowconflicticon(imageid) {
+        let checkimage = this.checkconflictdisplay(imageid);
+        if (checkimage) {
+            return (
+                <button className="general-button hide-image" onClick={() => { this.hideconflictimage(imageid) }}>
+                    {hideImageIcon()}
+                </button>
+            )
+        } else {
+            return (
+                <button className="general-button hide-image" onClick={() => { this.hideconflictimage(imageid) }}>
+                    {showImageIcon()}
+                </button>)
+        }
+
+    }
+    showconflictimage(image) {
+        return (<div className="general-flex" key={image.imageid}>
+            <div className={`flex-1`}>
+                <div className="general-container alignRight">
+                    {this.handleshowconflicticon(image.imageid)}
+                </div>
+                {this.handleshowconflictimage(image)}
+            </div>
+        </div>)
+    }
+    conflictimagedropdown(conflict) {
+        let conflictimages = [];
+        if (conflict.hasOwnProperty("images")) {
+            // eslint-disable-next-line
+            conflict.images.image.map(image => {
+                conflictimages.push(this.showconflictimage(image))
+
+            })
+        }
+        return conflictimages;
+
+    }
     showpetitionconflict(conflict, seq) {
         return (<div className="general-flex" key={conflict.conflictid}>
             <div className={`flex-1`}>
-                <span className="titleFont">Conflict#{seq + 1}</span><span className={`regularFont`}>{conflict.conflict}</span>
+
+                <div className="general-flex">
+                    <div className={`flex-1`}>
+                        <span className="titleFont">Conflict#{seq + 1}</span><span className={`regularFont`}>{conflict.conflict}</span>
+                    </div>
+                </div>
+
+                {this.conflictimagedropdown(conflict)}
+
+                {this.showarguementsbyconflict(conflict)}
+
+
             </div>
         </div>)
 
     }
-    showpetitionarguement(arguement, i) {
+    getimagekeysfromid(imageid) {
+        let petitionkeys = [];
+        let petition = this.getpetition();
+        if (petition.hasOwnProperty("conflicts")) {
+            // eslint-disable-next-line
+            petition.conflicts.conflict.map((conflict, i) => {
+                if (conflict.hasOwnProperty("arguements")) {
+                    // eslint-disable-next-line
+                    conflict.arguements.arguement.map((arguement, j) => {
+                        if (arguement.hasOwnProperty("images")) {
+                            // eslint-disable-next-line
+                            arguement.images.image.map((image, k) => {
+                                if (image.imageid === imageid) {
+                                    petitionkeys[0] = i;
+                                    petitionkeys[1] = j;
+                                    petitionkeys[2] = k;
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+        return petitionkeys;
+    }
 
-        return (<div className="general-flex addLeftMargin" key={arguement.arguementid}>
-            <div className="flex-1">
-                <span className="titleFont">Arguement#{i + 1}</span> <span className={`regularFont`}>{arguement.arguement}</span>
+    hidearguementimage(imageid) {
+
+        if (this.props.allusers) {
+            let allusers = this.props.allusers;
+            let userkeys = this.getuserkeysfrompetition();
+            let imagekeys = this.getimagekeysfromid(imageid);
+            let i = userkeys[0];
+            let j = userkeys[1];
+            let k = imagekeys[0];
+            let l = imagekeys[1];
+            let m = imagekeys[2];
+
+            let checkhideimage = this.checkhideimage(imageid);
+
+            if (checkhideimage) {
+
+                allusers.myuser[i].petitions.petition[j].conflicts.conflict[k].arguements.arguement[l].images.image[m].display = false;
+            } else {
+
+                allusers.myuser[i].petitions.petition[j].conflicts.conflict[k].arguements.arguement[l].images.image[m].display = true;
+            }
+            this.props.reduxAllUsers(allusers);
+            this.setState({ render: 'render' })
+        }
+
+
+    }
+    checkhideimage(imageid) {
+        let checkhideimage = true;
+        if (this.props.allusers) {
+            let allusers = this.props.allusers;
+            let userkeys = this.getuserkeysfrompetition();
+            let imagekeys = this.getimagekeysfromid(imageid);
+            let i = userkeys[0];
+            let j = userkeys[1];
+            let k = imagekeys[0];
+            let l = imagekeys[1];
+            let m = imagekeys[2]
+
+            let image = allusers.myuser[i].petitions.petition[j].conflicts.conflict[k].arguements.arguement[l].images.image[m];
+            if (image.hasOwnProperty("display")) {
+
+                checkhideimage = image.display;
+            }
+
+
+        }
+        return checkhideimage;
+    }
+    handlearguementimagebutton(imageid) {
+        if (this.checkhideimage(imageid)) {
+            return (
+                <button className="general-button hide-image" onClick={() => this.hidearguementimage(imageid)}>
+                    {hideImageIcon()}
+                </button>)
+        } else {
+            return (<button className="general-button hide-image" onClick={() => this.hidearguementimage(imageid)}>
+                {showImageIcon()}
+            </button>)
+        }
+
+    }
+    showarguementimage(image) {
+        const showimage = [];
+        const checkhideimage = this.checkhideimage(image.imageid);
+
+        if (checkhideimage) {
+            showimage.push(<div className="general-container alignCenter" key={image.imageid}>
+                <img src={image.image} alt="conflict" className="conflict-image" />
+            </div>)
+
+        }
+
+        return (<div className="general-flex" key={image.imageid}>
+            <div className={`flex-1`}>
+                <div className="general-container alignRight">
+                    {this.handlearguementimagebutton(image.imageid)}
+                </div>
+                {showimage}
             </div>
         </div>)
+
+    }
+    showarguementimages(arguement) {
+        let arguementimages = [];
+        if (arguement.hasOwnProperty("images")) {
+            // eslint-disable-next-line
+            arguement.images.image.map(image => {
+
+                arguementimages.push(this.showarguementimage(image))
+            })
+        }
+        return arguementimages;
+
+    }
+    showpetitionarguement(arguement, i) {
+
+        return (
+            <div className="general-flex" key={arguement.arguementid}>
+                <div className="flex-1">
+
+
+                    <div className="general-flex addLeftMargin">
+                        <div className="flex-1">
+                            <span className="titleFont">Arguement#{i + 1}</span> <span className={`regularFont`}>{arguement.arguement}</span>
+                        </div>
+                    </div>
+
+                    {this.showarguementimages(arguement)
+                    }
+                </div>
+            </div>
+
+        )
     }
     showpetition() {
         let showpetition = [];
@@ -101,12 +360,7 @@ class ShowPetition extends Component {
             petition.conflicts.conflict.map((conflict, i) => {
                 showpetition.push(this.showpetitionconflict(conflict, i));
 
-                if (conflict.hasOwnProperty("arguements")) {
-                    // eslint-disable-next-line
-                    conflict.arguements.arguement.map((arguement, i) => {
-                        showpetition.push(this.showpetitionarguement(arguement, i))
-                    })
-                }
+
             })
 
 
@@ -492,7 +746,7 @@ class ShowPetition extends Component {
 
     async submitcomments() {
         let myuser = this.assembleuserforcomments();
-        console.log(myuser)
+
 
         try {
 

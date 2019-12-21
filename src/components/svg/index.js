@@ -25,6 +25,12 @@ export function submitIcon() {
 export function cameraIcon() {
     return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89.34 66.52"><defs><style></style></defs><title>camericon</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect className="cameraicon-1" x="63.72" y="0.5" width="17.32" height="10.4" rx="1.07" /><path className="cameraicon-2" d="M80.35,10.9H9A8.62,8.62,0,0,0,.5,19.65V57.26A8.63,8.63,0,0,0,9,66H80.35a8.63,8.63,0,0,0,8.49-8.76V19.65A8.62,8.62,0,0,0,80.35,10.9ZM50.83,57.54a17.22,17.22,0,0,1-17.46-17,17.47,17.47,0,0,1,34.92,0A17.22,17.22,0,0,1,50.83,57.54Z" /><ellipse className="cameraicon-3" cx="50.83" cy="41.64" rx="16.43" ry="14.84" /></g></g></svg>)
 }
+export function showImageIcon() {
+    return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 119.13 69.41"><defs><style></style></defs>/defs><title>showimage</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect className="showimage-1" x="1" y="1" width="117.13" height="67.41" rx="6.64" /><polygon points="59.56 58.92 77.83 35.42 41.3 35.42 59.56 58.92" /><text className="showimage-2" transform="translate(3.62 22.96) scale(0.79 1)">Show Image</text></g></g></svg>)
+}
+export function hideImageIcon() {
+    return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 123 69.41"><defs><style></style></defs><title>hideimage</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect className="hideimage-icon-1" x="1.45" y="1" width="117.13" height="67.41" rx="6.64" /><text className="hideimage-icon-2" transform="translate(6.36 22.96) scale(0.84 1)">Hide Image</text><path d="M73.73,58.14a3.43,3.43,0,0,1,0,4.91,3.51,3.51,0,0,1-2.49,1,3.55,3.55,0,0,1-2.5-1l-8.85-8.72-8.61,8.48a3.56,3.56,0,0,1-5,0,3.42,3.42,0,0,1,0-4.91l8.61-8.48L45.35,40a3.45,3.45,0,0,1,0-4.91,3.57,3.57,0,0,1,5,0l9.54,9.4,9.79-9.64a3.58,3.58,0,0,1,5,0,3.42,3.42,0,0,1,0,4.91l-9.78,9.65Z" /></g></g></svg>)
+}
 export function emptyBox() {
     return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 100"><defs><style></style></defs><title>emptybox</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect className="emptybox-1" x="2" y="2" width="121" height="96" /></g></g></svg>)
 }

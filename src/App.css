@@ -195,16 +195,28 @@ textarea.general-text{
 .addLeftMargin{
   margin-left:20px;
 }
-
+.conflict-image{
+  width:100%;
+  margin:auto;
+}
+.hide-image{
+  width:61px;
+  height:37px;
+}
 @media screen and (min-width:400px) {
   .constrain-landing{
     max-width:400px;
     margin:auto;
   }
-
+  .conflict-image{
+    max-width:337px;
+  }
     
   }
 @media screen and (min-width:600px) {
+  .conflict-image{
+    max-width:550px;
+  }
   .constrain-landing{
     max-width:500px;
   }
@@ -215,6 +227,13 @@ textarea.general-text{
   }
 
 @media screen and (min-width:800px) {
+  .hide-image{
+    width:90px;
+    height:53px;
+  }
+  .conflict-image{
+    max-width:700px;
+  }
   .addLeftMargin{
     margin-left:40px;
   }
@@ -261,6 +280,9 @@ textarea.general-text{
 
 }
 @media screen and (min-width:1000px) {
+   .conflict-image{
+    max-width:900px;
+  }
   
   
   .showpetitionid-container{
@@ -268,6 +290,13 @@ textarea.general-text{
   }
 }
 @media screen and (min-width:1200px) {
+  .hide-image{
+    width:131px;
+    height:70px;
+  }
+  .conflict-image{
+    max-width:1000px;
+  }
   .constrain-landing{
     max-width:800px;
     
