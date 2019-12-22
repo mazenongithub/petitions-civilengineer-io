@@ -1711,8 +1711,9 @@ class Petitions extends Component {
                 let response = await UploadConflictImage(formData, conflictid);
                 console.log(response)
                 if (response.response.hasOwnProperty("myuser")) {
+                    let activeconflictimageid = response.response.activeimageid;
                     this.props.reduxUser(response.response.myuser)
-                    this.setState({ message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                    this.setState({ activeconflictimageid, message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
                 }
 
 
@@ -1741,8 +1742,9 @@ class Petitions extends Component {
                 let response = await UploadArguementImage(formData, arguementid);
                 console.log(response)
                 if (response.response.hasOwnProperty("myuser")) {
+                    let activearguementimageid = response.response.activeimageid;
                     this.props.reduxUser(response.response.myuser)
-                    this.setState({ message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                    this.setState({ activearguementimageid, message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
                 }
 
 
