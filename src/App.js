@@ -44,9 +44,8 @@ class App extends Component {
         if (response.hasOwnProperty("allusers")) {
           this.props.reduxAllUsers(response.allusers)
         }
+
       }
-
-
     } catch (err) {
       alert(err)
     }

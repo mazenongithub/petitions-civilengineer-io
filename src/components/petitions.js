@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
-import { removeIconSmall, petitionidicon, redLeft, redRight, blueLeft, blueRight, saveAllPetitionsIcon } from './svg';
-import { CreateConflict, CreatePetition, makeID, CreateArguement, formatUTCDateforDisplay } from './functions';
-import { SavePetitions } from './actions/api';
+import { removeIconSmall, petitionidicon, redLeft, redRight, blueLeft, blueRight, saveAllPetitionsIcon, hideImageIcon, showImageIcon, addImageIcon, scrollImageUp, scrollImageDown, scrollImageLeft, scrollImageRight } from './svg';
+import { CreateConflict, CreatePetition, makeID, CreateArguement, formatUTCDateforDisplay, CreateImage } from './functions';
+import { SavePetitions, UploadPetitionImage } from './actions/api';
 
 
 class Petitions extends Component {
@@ -17,7 +17,7 @@ class Petitions extends Component {
             versus: '',
             activepetitionid: '',
             activearguementid: '',
-            activeimageid: '',
+            activearguementimageid: '',
             conflict: '',
             arguement: '',
             render: ''
@@ -1072,10 +1072,696 @@ class Petitions extends Component {
         }
 
     }
-    showpetitionconflict(conflict, seq) {
-        return (<div className="general-flex" onClick={event => { this.makeconflictactive(conflict.conflictid) }} key={`${seq}${conflict.conflictid}`}>
+    getconflictimagekeys(imageid) {
+        let keys = [];
+        if (this.props.myusermodel) {
+
+            let petition = this.getactivepetition();
+            if (petition.hasOwnProperty("conflicts")) {
+                // eslint-disable-next-line
+                petition.conflicts.conflict.map((conflict, i) => {
+                    if (conflict.hasOwnProperty("images")) {
+                        // eslint-disable-next-line
+                        conflict.images.image.map((image, j) => {
+                            if (image.imageid === imageid) {
+                                keys[0] = i;
+                                keys[1] = j;
+
+                            }
+                        })
+                    }
+                })
+            }
+        }
+        return keys;
+    }
+    checkconflictdisplay(imageid) {
+        let checkconflictdisplay = true;
+        if (this.props.myusermodel) {
+            let imagekeys = this.getconflictimagekeys(imageid)
+            let petition = this.getactivepetition();
+            let i = imagekeys[0];
+            let j = imagekeys[1]
+            let image = petition.conflicts.conflict[i].images.image[j];
+            if (image.hasOwnProperty("display")) {
+                checkconflictdisplay = petition.conflicts.conflict[i].images.image[j].display;
+
+            }
+        }
+        return checkconflictdisplay;
+
+    }
+    hideconflictimage(imageid) {
+        if (this.props.myusermodel) {
+            let myuser = this.props.myusermodel
+            let imagekeys = this.getconflictimagekeys(imageid)
+            let i = this.getactivepetitionposition();
+            let j = imagekeys[0];
+            let k = imagekeys[1];
+            let checkconflicdisplay = this.checkconflictdisplay(imageid);
+            if (checkconflicdisplay) {
+                myuser.petitions.petition[i].conflicts.conflict[j].images.image[k].display = false;
+            } else {
+                myuser.petitions.petition[i].conflicts.conflict[j].images.image[k].display = true;
+            }
+            this.props.reduxUser(myuser);
+            this.setState({ render: 'render' })
+        }
+    }
+    handleshowconflicticon(imageid) {
+        let checkimage = this.checkconflictdisplay(imageid);
+        if (checkimage) {
+            return (
+                <button className="general-button hide-image" onClick={() => { this.hideconflictimage(imageid) }}>
+                    {hideImageIcon()}
+                </button>
+            )
+        } else {
+            return (
+                <button className="general-button hide-image" onClick={() => { this.hideconflictimage(imageid) }}>
+                    {showImageIcon()}
+                </button>)
+        }
+
+    }
+    handleshowconflictimage(image) {
+        let checkconflictdisplay = this.checkconflictdisplay(image.imageid);
+
+        if (checkconflictdisplay) {
+            return (<div className="general-container alignCenter">
+                <img src={image.image} alt="conflict" className="conflict-image" />
+            </div>)
+        } else {
+            return;
+        }
+
+    }
+
+    showconflictimage(image) {
+        return (<div className="general-flex" key={image.imageid}>
             <div className={`flex-1`}>
-                <span className="titleFont">Conflict#{seq + 1}</span><span className={`regularFont ${this.getactiveconflictdisplay(conflict.conflictid)}`}>{conflict.conflict}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => this.removeConflict(conflict.conflictid)}>{removeIconSmall()}</button></span>
+                <div className="general-container alignRight">
+                    {this.handleshowconflicticon(image.imageid)}
+                </div>
+                {this.handleshowconflictimage(image)}
+            </div>
+        </div>)
+    }
+
+    conflictimagedropdown(conflict) {
+        let conflictimages = [];
+        if (conflict.hasOwnProperty("images")) {
+            // eslint-disable-next-line
+            conflict.images.image.map(image => {
+                conflictimages.push(this.showconflictimage(image))
+
+            })
+        }
+        return conflictimages;
+
+    }
+    showarguementsbyconflict(conflict) {
+        let arguements = [];
+        if (conflict.hasOwnProperty("arguements")) {
+            // eslint-disable-next-line
+            conflict.arguements.arguement.map((arguement, i) => {
+                arguements.push(this.showpetitionarguement(arguement, i))
+            })
+
+        }
+        return arguements;
+    }
+    makeconflictimageactive(imageid) {
+        if (this.state.activeconflictimageid === imageid) {
+            this.setState({ activeconflictimageid: false })
+        } else {
+            this.setState({ activeconflictimageid: imageid })
+        }
+    }
+    checkactiveconflictimage(imageid) {
+        if (this.state.activeconflictimageid === imageid) {
+            return (`activeconflictdisplay`)
+        } else {
+            return;
+        }
+    }
+    getactiveconflictimageposition() {
+        let position = false;
+        if (this.state.activeconflictimageid && this.state.activeconflictid) {
+            let activeimageid = this.state.activeconflictimageid;
+            let conflict = this.getactiveconflict();
+            if (conflict.hasOwnProperty("images")) {
+                // eslint-disable-next-line
+                conflict.images.image.map((image, i) => {
+                    if (image.imageid === activeimageid) {
+                        position = i;
+                    }
+
+                })
+            }
+        }
+        return position;
+    }
+    getconflictactiveimage() {
+        let images = false;
+        if (this.state.activeconflictimageid) {
+            let imageid = this.state.activeconflictimageid;
+            if (this.state.activeconflictid) {
+                let conflict = this.getactiveconflict();
+                if (conflict.hasOwnProperty("images")) {
+                    // eslint-disable-next-line
+                    conflict.images.image.map(image => {
+                        if (image.imageid === imageid) {
+                            images = image;
+                        }
+                    })
+                }
+            }
+        }
+        return images;
+    }
+    getconflictimagebyposition(i) {
+        let image = false;
+        if (this.state.activeconflictid) {
+            let conflict = this.getactiveconflict();
+            if (conflict.hasOwnProperty("images")) {
+                image = conflict.images.image[i];
+            }
+        }
+        return image;
+
+    }
+    moveconflictlistdown() {
+
+        if (this.props.myusermodel) {
+            let myuser = this.props.myusermodel;
+
+            if (this.state.activepetitionid) {
+                let i = this.getactivepetitionposition();
+                let j = this.getactiveconflictposition();
+                let k = this.getactiveconflictimageposition();
+                let image = this.getconflictactiveimage();
+
+
+                let conflict = this.getactiveconflict();
+                if (conflict.hasOwnProperty("images")) {
+                    let length = conflict.images.image.length;
+
+                    if (k < length - 1) {
+                        k += 1;
+                        let image_1 = this.getconflictimagebyposition(k)
+                        myuser.petitions.petition[i].conflicts.conflict[j].images.image[k] = image;;
+                        myuser.petitions.petition[i].conflicts.conflict[j].images.image[k - 1] = image_1;
+                        this.props.reduxUser(myuser);
+                        this.setState({ render: 'render' })
+
+
+
+                    }
+
+                }
+
+
+
+
+            }// active petiton
+
+        }
+
+    }
+    moveconflictlistup() {
+
+        if (this.props.myusermodel) {
+            let myuser = this.props.myusermodel;
+
+            if (this.state.activepetitionid) {
+                let i = this.getactivepetitionposition();
+                let j = this.getactiveconflictposition();
+                let k = this.getactiveconflictimageposition();
+                let image = this.getconflictactiveimage();
+                let conflict = this.getactiveconflict();
+                if (conflict.hasOwnProperty("images")) {
+
+
+                    if (k !== 0) {
+                        k = k - 1;
+                        let image_1 = this.getconflictimagebyposition(k)
+                        myuser.petitions.petition[i].conflicts.conflict[j].images.image[k] = image;
+                        myuser.petitions.petition[i].conflicts.conflict[j].images.image[k + 1] = image_1;
+                        this.props.reduxUser(myuser);
+                        this.setState({ render: 'render' })
+
+
+
+                    }
+
+                }
+
+
+
+
+            }// active petiton
+
+        }
+
+    }
+
+
+    imageslistfromconflict() {
+        let imagelist = [];
+        if (this.state.activeconflictid) {
+            let conflict = this.getactiveconflict();
+            if (conflict.hasOwnProperty("images")) {
+                // eslint-disable-next-line
+                conflict.images.image.map((image, i) => {
+                    imagelist.push(<div className={`general-container regularFont ${this.checkactiveconflictimage(image.imageid)}`} onClick={() => { this.makeconflictimageactive(image.imageid) }}>Image {i + 1} {image.image}<span><button className="remove-icon-small general-button addLeftMargin">{removeIconSmall()}</button></span></div>)
+                })
+            }
+        }
+
+        return imagelist;
+    }
+    showconflictimagemenu(conflict) {
+        let conflictid = this.state.activeconflictid;
+        if (conflictid === conflict.conflictid) {
+            if (this.state.width > 1200) {
+                return (
+                    <div className="general-flex">
+                        <div className="flex-3 showBorder">
+                            <span><input type="file" id="image-conflict" /></span><span><button className="addImageIcon general-button">{addImageIcon()}</button></span>
+                        </div>
+                        <div className="flex-4 showBorder">{this.imageslistfromconflict(conflict)}</div>
+
+                        <div className="flex-1 showBorder">
+                            <div className="general-container">
+                                <button className="general-button image-scroll" onClick={() => { this.moveconflictlistup(conflict.conflictid) }}>{scrollImageUp()}</button>
+                            </div>
+                            <div className="general-container">
+                                <button className="general-button image-scroll" onClick={() => { this.moveconflictlistdown(conflict.conflictid) }}>{scrollImageDown()}</button>
+                            </div>
+                        </div>
+                        <div className="flex-4 showBorder">&nbsp;</div>
+                    </div>)
+
+            } else if (this.state.width > 800) {
+                return (
+                    <div className="general-flex">
+                        <div className="flex-3 showBorder">  <span><input type="file" id="image-conflict" /></span><span><button className="addImageIcon general-button">{addImageIcon()}</button></span></div>
+                        <div className="flex-4 showBorder">{this.imageslistfromconflict(conflict)}</div>
+                        <div className="flex-1 showBorder">
+
+                            <div className="general-container">
+                                <button className="general-button image-scroll" onClick={() => { this.moveconflictlistup(conflict.conflictid) }}>{scrollImageUp()}</button>
+                            </div>
+                            <div className="general-container">
+                                <button className="general-button image-scroll" onClick={() => { this.moveconflictlistdown(conflict.conflictid) }}>{scrollImageDown()}</button>
+                            </div>
+
+                        </div>
+                    </div>)
+            } else {
+                return (
+                    <div className="general-flex">
+                        <div className="flex-1">
+
+                            <div className="general-flex">
+                                <div className="flex-1 showBorder"> <span><input type="file" id="image-conflict" /></span><span><button className="addImageIcon general-button">{addImageIcon()}</button></span></div>
+                                <div className="flex-2 showBorder">{this.imageslistfromconflict(conflict)}</div>
+                            </div>
+
+                            <div className="general-flex">
+                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll" onClick={() => { this.moveconflictlistdown(conflict.conflictid) }}>{scrollImageLeft()}</button></div>
+                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll" onClick={() => { this.moveconflictlistup(conflict.conflictid) }}>{scrollImageRight()}</button></div>
+                            </div>
+
+                        </div>
+
+                    </div>)
+            }
+        } else {
+            return;
+        }
+    }
+    makeimageactive(imageid) {
+
+        if (this.state.activearguementimageid === imageid) {
+
+            this.setState({ activearguementimageid: false })
+        } else {
+
+            this.setState({ activearguementimageid: imageid })
+        }
+    }
+    getactiveimageclass(imageid) {
+        if (imageid === this.state.activearguementimageid) {
+            return (`activearguementdisplay`)
+        } else {
+            return;
+        }
+
+
+    }
+    imageslistfromarguement(arguement) {
+        let arguementlist = [];
+
+        if (arguement.hasOwnProperty("images")) {
+            // eslint-disable-next-line
+            arguement.images.image.map((image, i) => {
+                arguementlist.push(<div className={`general-container regularFont ${this.getactiveimageclass(image.imageid)}`} onClick={() => { this.makeimageactive(image.imageid) }}>Image {i + 1}{image.image}<span><button className="remove-icon-small general-button addLeftMargin">{removeIconSmall()}</button></span></div>)
+            })
+
+        }
+        return arguementlist;
+
+    }
+
+    getactivearguementimage() {
+        let activeimage = false;
+        if (this.state.activearguementid) {
+            let arguement = this.getactivearguement();
+            if (this.state.activearguementimageid) {
+                let imageid = this.state.activearguementimageid;
+
+                if (arguement.hasOwnProperty("images")) {
+                    // eslint-disable-next-line
+                    arguement.images.image.map(image => {
+                        if (image.imageid === imageid) {
+                            activeimage = image;
+                        }
+                    })
+                }
+
+            }
+        }
+        return activeimage;
+    }
+
+    getactivearguementimageposition(imageid) {
+        let position = false;
+        if (this.state.activearguementid) {
+            let arguement = this.getactivearguement();
+
+            if (arguement.hasOwnProperty("images")) {
+                // eslint-disable-next-line
+                arguement.images.image.map((image, i) => {
+                    if (image.imageid === imageid) {
+                        position = i;
+
+                    }
+                })
+            }
+        }
+        return position;
+    }
+
+    getactivearguementimagebyposition(i) {
+        let image = false;
+
+        if (this.state.activearguementid) {
+            let arguement = this.getactivearguement();
+            if (arguement.hasOwnProperty("images")) {
+                // eslint-disable-next-line
+                image = arguement.images.image[i]
+            }
+        }
+        return image;
+
+    }
+    movearguementimageup() {
+
+        if (this.props.myusermodel) {
+            let myuser = this.props.myusermodel;
+            if (this.state.activearguementid) {
+                let arguement = this.getactivearguement();
+                if (arguement.hasOwnProperty("images")) {
+
+                    if (this.state.activepetitionid) {
+
+                        let i = this.getactivepetitionposition();
+                        if (this.state.activeconflictid) {
+                            let j = this.getactiveconflictposition();
+                            let k = this.getactivearguementposition();
+
+
+
+                            if (this.state.activearguementimageid) {
+                                let imageid = this.state.activearguementimageid;
+                                let l = this.getactivearguementimageposition(imageid);
+
+                                let image = this.getactivearguementimage()
+                                if (l > 0) {
+
+                                    let image_1 = this.getactivearguementimagebyposition(l - 1);
+
+                                    myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images.image[l - 1] = image;
+                                    myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images.image[l] = image_1;
+                                    this.props.reduxUser(myuser);
+                                    this.setState({ render: 'render' })
+
+                                }
+
+
+
+
+                            }
+
+
+
+                        } // active arguement
+
+
+
+                    }// active conflict
+
+
+
+
+                }// active petition
+
+
+
+            }
+        }
+    }
+    movearguementimagedown() {
+
+        if (this.props.myusermodel) {
+            let myuser = this.props.myusermodel;
+            if (this.state.activearguementid) {
+                let arguement = this.getactivearguement();
+                if (arguement.hasOwnProperty("images")) {
+
+                    if (this.state.activepetitionid) {
+
+                        let i = this.getactivepetitionposition();
+                        if (this.state.activeconflictid) {
+                            let j = this.getactiveconflictposition();
+                            let k = this.getactivearguementposition();
+
+
+
+                            if (this.state.activearguementimageid) {
+                                let imageid = this.state.activearguementimageid;
+                                let l = this.getactivearguementimageposition(imageid);
+
+                                let image = this.getactivearguementimage();
+                                let length = arguement.images.image.length
+                                if (l < length - 1) {
+
+                                    let image_1 = this.getactivearguementimagebyposition(l + 1);
+
+                                    myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images.image[l + 1] = image;
+                                    myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images.image[l] = image_1;
+                                    this.props.reduxUser(myuser);
+                                    this.setState({ render: 'render' })
+
+                                }
+
+
+
+
+                            }
+
+
+
+                        } // active arguement
+
+
+
+                    }// active conflict
+
+
+
+
+                }// active petition
+
+
+
+            }
+        }
+    }
+    getactiveimagefromresponse(myuser, imageid) {
+        let activeimageid = false;
+        if (myuser.hasOwnProperty("petitions")) {
+            // eslint-disable-next-line
+            myuser.petitions.petition.map(petition => {
+                if (petition.hasOwnProperty("conflicts")) {
+                    // eslint-disable-next-line
+                    petition.conflicts.conflict.map(conflict => {
+                        if (conflict.hasOwnProperty("arguements")) {
+                            // eslint-disable-next-line
+                            conflict.arguements.arguement.map(arguement => {
+                                if (arguement.hasOwnProperty("images")) {
+                                    // eslint-disable-next-line
+                                    arguement.images.image.map(image => {
+                                        if (image.imageid === imageid) {
+                                            activeimageid = imageid;
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    })
+
+                }
+
+            })
+        }
+        return activeimageid;
+
+    }
+    async uploadarguementimage() {
+
+        let myuser = this.getmyuser()
+        if (myuser) {
+            if (this.state.activepetitionid) {
+                let i = this.getactivepetitionposition();
+
+                if (this.state.activeconflictid) {
+                    let j = this.getactiveconflictposition();
+
+                    if (this.state.activearguementid) {
+                        let arguement = this.getactivearguement();
+                        let k = this.getactivearguementposition();
+                        let imageid = makeID(16)
+                        let image = "";
+                        let newImage = CreateImage(imageid, image)
+                        if (arguement.hasOwnProperty("images")) {
+
+                            myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images.image.push(newImage)
+
+                        } else {
+                            let images = { image: [newImage] }
+                            myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images = images;
+                        }
+                        this.props.reduxUser(myuser);
+                        let formData = new FormData();
+                        let myfile = document.getElementById("image-arguement");
+                        formData.append("profilephoto", myfile.files[0]);
+                        formData.append("myuser", JSON.stringify(myuser));
+                        let response = await UploadPetitionImage(formData, imageid);
+                        console.log(response)
+                        if (response.response.hasOwnProperty("myuser")) {
+                            this.props.reduxUser(response.response.myuser)
+                            this.setState({ activearguementimageid: this.getactiveimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                        }
+
+
+
+                    }
+
+
+                }
+
+
+            }
+
+
+
+
+            // HTML file input, chosen by user
+
+
+
+
+        }
+    }
+    showarguementimagemenu(arguement) {
+        let arguementid = this.state.activearguementid;
+        if (arguement.arguementid === arguementid) {
+            if (this.state.width > 1200) {
+                return (
+                    <div className="general-flex">
+                        <div className="flex-3 showBorder">
+                            <span><input type="file" id="image-arguement" /></span><span><button className="addImageIcon general-button" onClick={() => { this.uploadarguementimage() }}>{addImageIcon()}</button></span>
+                        </div>
+                        <div className="flex-4 showBorder">{this.imageslistfromarguement(arguement)}</div>
+
+                        <div className="flex-1 showBorder">
+                            <div className="general-container alignCenter">
+                                <button className="general-button image-scroll" onClick={() => { this.movearguementimageup(arguement) }}>{scrollImageUp()}</button>
+                            </div>
+                            <div className="general-container">
+                                <button className="general-button image-scroll" onClick={() => { this.movearguementimagedown(arguement) }}>{scrollImageDown()}</button>
+                            </div>
+                        </div>
+                        <div className="flex-4 showBorder">&nbsp;</div>
+                    </div>)
+
+            } else if (this.state.width > 800) {
+                return (
+                    <div className="general-flex">
+                        <div className="flex-3 showBorder">  <span><input type="file" id="image-arguement" /></span><span><button className="addImageIcon general-button" onClick={() => { this.uploadarguementimage() }}>{addImageIcon()}</button></span></div>
+                        <div className="flex-4 showBorder">{this.imageslistfromarguement(arguement)}</div>
+                        <div className="flex-1 showBorder">
+
+                            <div className="general-container">
+                                <button className="general-button image-scroll" onClick={() => { this.movearguementimageup(arguement) }}>{scrollImageUp()}</button>
+                            </div>
+                            <div className="general-container">
+                                <button className="general-button image-scroll" onClick={() => { this.movearguementimagedown(arguement) }}>{scrollImageDown()}</button>
+                            </div>
+
+                        </div>
+                    </div>)
+            } else {
+                return (
+                    <div className="general-flex">
+                        <div className="flex-1">
+
+                            <div className="general-flex">
+                                <div className="flex-1 showBorder"> <span><input type="file" id="image-arguement" /></span><span><button className="addImageIcon general-button" onClick={() => { this.uploadarguementimage() }}>{addImageIcon()}</button></span></div>
+                                <div className="flex-2 showBorder">{this.imageslistfromarguement(arguement)}</div>
+                            </div>
+
+                            <div className="general-flex">
+                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll" onClick={() => { this.movearguementimagedown(arguement) }}>{scrollImageLeft()}</button></div>
+                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll" onClick={() => { this.movearguementimageup(arguement) }}>{scrollImageRight()}</button></div>
+                            </div>
+
+                        </div>
+
+                    </div>)
+            }
+        } else {
+            return;
+        }
+    }
+    showpetitionconflict(conflict, seq) {
+        return (<div className="general-flex" key={conflict.conflictid}>
+            <div className={`flex-1`}>
+
+                <div className="general-flex">
+                    <div className={`flex-1`} >
+                        <span className="titleFont">Conflict#{seq + 1}</span><span onClick={event => { this.makeconflictactive(conflict.conflictid) }} className={`regularFont ${this.getactiveconflictdisplay(conflict.conflictid)}`}>{conflict.conflict}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => this.removeConflict(conflict.conflictid)}>{removeIconSmall()}</button></span>
+                    </div>
+                </div>
+                {this.showconflictimagemenu(conflict)}
+                {this.conflictimagedropdown(conflict)}
+
+                {this.showarguementsbyconflict(conflict)}
+
+
             </div>
         </div>)
 
@@ -1152,13 +1838,144 @@ class Petitions extends Component {
         }
 
     }
-    showpetitionarguement(arguement, i) {
+    hidearguementimage(imageid) {
 
-        return (<div className="general-flex addLeftMargin" onClick={() => { this.makearguementactive(arguement.arguementid) }} key={`${i}${arguement.arguementid}`}>
-            <div className="flex-1">
-                <span className="titleFont">Arguement#{i + 1}</span> <span className={`regularFont ${this.getactivearguementdisplay(arguement.arguementid)}`}>{arguement.arguement}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => { this.removeArguement(arguement.arguementid) }}>{removeIconSmall()}</button></span>
+        if (this.props.myusermodel) {
+            let myuser = this.props.myusermodel;
+            let userkeys = this.getarguementimagekeys(imageid)
+            let i = userkeys[0];
+            let j = userkeys[1];
+            let k = userkeys[2];
+            let l = userkeys[3];
+
+
+            let checkhideimage = this.checkhideimage(imageid);
+
+            if (checkhideimage) {
+
+                myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images.image[l].display = false;
+            } else {
+
+                myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images.image[l].display = true;
+            }
+            this.props.reduxUser(myuser);
+            this.setState({ render: 'render' })
+        }
+
+
+    }
+    getarguementimagekeys(imageid) {
+        let keys = [];
+        let petition = this.getactivepetition();
+        keys[0] = this.getactivepetitionposition();
+
+        if (petition.hasOwnProperty("conflicts")) {
+            // eslint-disable-next-line
+            petition.conflicts.conflict.map((conflict, i) => {
+                if (conflict.hasOwnProperty("arguements")) {
+                    // eslint-disable-next-line
+                    conflict.arguements.arguement.map((arguement, j) => {
+
+                        if (arguement.hasOwnProperty("images")) {
+                            // eslint-disable-next-line
+                            arguement.images.image.map((image, k) => {
+                                if (image.imageid === imageid) {
+                                    keys[1] = i
+                                    keys[2] = j
+                                    keys[3] = k
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+        return keys;
+
+    }
+    checkhideimage(imageid) {
+        let checkhideimage = true;
+        if (this.props.myusermodel) {
+            let myuser = this.props.myusermodel;
+            let imagekeys = this.getarguementimagekeys(imageid)
+            let i = imagekeys[0];
+            let j = imagekeys[1];
+            let k = imagekeys[2];
+            let l = imagekeys[3];
+            let image = myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images.image[l];
+            if (image.hasOwnProperty("display")) {
+
+                checkhideimage = image.display;
+            }
+
+
+        }
+        return checkhideimage;
+    }
+    handlearguementimagebutton(imageid) {
+        if (this.checkhideimage(imageid)) {
+            return (
+                <button className="general-button hide-image" onClick={() => this.hidearguementimage(imageid)}>
+                    {hideImageIcon()}
+                </button>)
+        } else {
+            return (<button className="general-button hide-image" onClick={() => this.hidearguementimage(imageid)}>
+                {showImageIcon()}
+            </button>)
+        }
+
+    }
+    showarguementimage(image) {
+        const showimage = [];
+        const checkhideimage = this.checkhideimage(image.imageid);
+
+        if (checkhideimage) {
+            showimage.push(<div className="general-container alignCenter" key={image.imageid}>
+                <img src={image.image} alt="conflict" className="conflict-image" />
+            </div>)
+
+        }
+
+        return (<div className="general-flex" key={image.imageid}>
+            <div className={`flex-1`}>
+                <div className="general-container alignRight">
+                    {this.handlearguementimagebutton(image.imageid)}
+                </div>
+                {showimage}
             </div>
         </div>)
+
+    }
+    showarguementimages(arguement) {
+        let arguementimages = [];
+        if (arguement.hasOwnProperty("images")) {
+            // eslint-disable-next-line
+            arguement.images.image.map(image => {
+
+                arguementimages.push(this.showarguementimage(image))
+            })
+        }
+        return arguementimages;
+
+    }
+    showpetitionarguement(arguement, i) {
+
+        return (
+            <div className="general-flex" key={arguement.arguementid}>
+                <div className="flex-1">
+
+
+                    <div className="general-flex addLeftMargin">
+                        <div className="flex-1">
+                            <span className="titleFont">Arguement#{i + 1}</span> <span onClick={() => { this.makearguementactive(arguement.arguementid) }} className={`regularFont ${this.getactivearguementdisplay(arguement.arguementid)}`}>{arguement.arguement}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => { this.removeArguement(arguement.argumentid) }}>{removeIconSmall()}</button></span>
+                        </div>
+                    </div>
+                    {this.showarguementimagemenu(arguement)}
+                    {this.showarguementimages(arguement)}
+                </div>
+            </div>
+
+        )
     }
 
     showpetition() {
@@ -1169,12 +1986,7 @@ class Petitions extends Component {
             petition.conflicts.conflict.map((conflict, i) => {
                 showpetition.push(this.showpetitionconflict(conflict, i));
 
-                if (conflict.hasOwnProperty("arguements")) {
-                    // eslint-disable-next-line
-                    conflict.arguements.arguement.map((arguement, i) => {
-                        showpetition.push(this.showpetitionarguement(arguement, i))
-                    })
-                }
+
             })
 
 

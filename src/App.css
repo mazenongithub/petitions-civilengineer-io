@@ -203,6 +203,14 @@ textarea.general-text{
   width:61px;
   height:37px;
 }
+.image-scroll{
+  width:74px;
+  height:64px;
+}
+.addImageIcon{
+  width:81px;
+  height:65px;
+}
 @media screen and (min-width:400px) {
   .constrain-landing{
     max-width:400px;
@@ -227,6 +235,14 @@ textarea.general-text{
   }
 
 @media screen and (min-width:800px) {
+  .image-scroll{
+    width:83px;
+    height:80px;
+  }
+  .addImageIcon{
+    width:114px;
+    height:72px;
+  }
   .hide-image{
     width:90px;
     height:53px;
@@ -266,6 +282,7 @@ textarea.general-text{
       }
  
 
+   
 
   .login-button{
     width:315px;
@@ -290,6 +307,10 @@ textarea.general-text{
   }
 }
 @media screen and (min-width:1200px) {
+  .addImageIcon{
+    width:123px;
+    height:80px;
+  }
   .hide-image{
     width:131px;
     height:70px;
