@@ -1334,7 +1334,10 @@ class Petitions extends Component {
             if (conflict.hasOwnProperty("images")) {
                 // eslint-disable-next-line
                 conflict.images.image.map((image, i) => {
-                    imagelist.push(<div className={`general-container regularFont ${this.checkactiveconflictimage(image.imageid)}`} onClick={() => { this.makeconflictimageactive(image.imageid) }} key={`${makeID(4)}${image.imageid}`}>Image {i + 1} {image.image}<span><button className="remove-icon-small general-button addLeftMargin">{removeIconSmall()}</button></span></div>)
+                    imagelist.push(<div className={`general-container regularFont ${this.checkactiveconflictimage(image.imageid)}`}
+                        key={`${makeID(4)}${image.imageid}`}>
+                        <span onClick={() => { this.makeconflictimageactive(image.imageid) }} >Image {i + 1} {image.image} </span>
+                        <span><button className="remove-icon-small general-button addLeftMargin" onClick={() => { this.removeconflictimage(image.imageid) }}>{removeIconSmall()}</button></span></div>)
                 })
             }
         }
@@ -1421,19 +1424,36 @@ class Petitions extends Component {
 
 
     }
-    async removearguementimage(imageid) {
-        console.log("removearguementimage")
-        if (this.props.myusermodel) {
-            let myuser = this.props.myusermodel;
+    async removeconflictimage(imageid) {
+        if (window.confirm(`Are you sure you want to delete image ?`)) {
+            if (this.props.myusermodel) {
+                let myuser = this.props.myusermodel;
 
-            let response = await DeletePetitionImage({ myuser }, imageid);
-            console.log(response)
-            if (response.response.hasOwnProperty("myuser")) {
-                this.props.reduxUser(response.response.myuser)
-                this.setState({ activearguementimageid: this.getactivearguementimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                let response = await DeletePetitionImage({ myuser }, imageid);
+                console.log(response)
+                if (response.response.hasOwnProperty("myuser")) {
+                    this.props.reduxUser(response.response.myuser)
+                    this.setState({ activearguementimageid: this.getactiveconflictimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                }
+
+
             }
+        }
+    }
+    async removearguementimage(imageid) {
+        if (window.confirm(`Are you sure you want to delete image ?`)) {
+            if (this.props.myusermodel) {
+                let myuser = this.props.myusermodel;
+
+                let response = await DeletePetitionImage({ myuser }, imageid);
+                console.log(response)
+                if (response.response.hasOwnProperty("myuser")) {
+                    this.props.reduxUser(response.response.myuser)
+                    this.setState({ activearguementimageid: this.getactivearguementimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                }
 
 
+            }
         }
     }
     imageslistfromarguement(arguement) {
@@ -1446,7 +1466,8 @@ class Petitions extends Component {
                     key={`${makeID(4)}${image.imageid}`}>
                     <span onClick={() => { this.makeimageactive(image.imageid) }} >Image {i + 1}{image.image}</span>
                     <span>
-                        <button className="remove-icon-small general-button addLeftMargin" onClick={() => { this.removearguementimage(image.imageid) }}>{removeIconSmall()}</button></span>
+                        <button className="remove-icon-small general-button addLeftMargin"
+                            onClick={() => { this.removearguementimage(image.imageid) }}>{removeIconSmall()}</button></span>
                 </div>)
             })
 
