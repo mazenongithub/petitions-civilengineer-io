@@ -142,6 +142,38 @@ export async function UploadPetitionImage(formdata, imageid) {
             return resp.json();
         })
 }
+
+export async function DeletePetitionImage(myuser, imageid) {
+
+    console.log(myuser, imageid)
+    var APIURL = `${process.env.REACT_APP_SERVER_API}/${imageid}/deleteimage`
+
+    return fetch(APIURL, {
+        method: 'post',
+        credentials: 'include',
+        headers: new Headers({
+            'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(myuser)
+    })
+        .then(resp => {
+
+            if (!resp.ok) {
+                if (resp.status >= 400 && resp.status < 500) {
+                    return resp.json().then(data => {
+                        let err = { errorMessage: data.message };
+                        throw err;
+                    })
+                }
+                else {
+                    let err = { errorMessage: 'Please try again later, server is not responding' };
+                    throw err;
+                }
+            }
+
+            return resp.json();
+        })
+}
 export async function UploadProfileImage(formdata, userid) {
 
 

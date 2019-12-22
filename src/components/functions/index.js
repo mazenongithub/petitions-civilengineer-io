@@ -75,8 +75,16 @@ export function MyUser() {
                         conflicts: {
                             conflict: [
                                 {
-                                    conflict: "I am owed representation, or compensation in having had received representation, for the grievance that I filed against the Federal Bureau of Reclamation.",
+                                    conflict: "I have been owed representation by the National Federation of Federal Employees for the grievance that I filed against the Federal Bureau of Reclamation dealing with my harassment in the workplace. Employees are allowed to removed themselves from a hostile work environment and file a grievance if it involves harassment in the workplace. This is without penalty of loss of entitlement, in saying that they are no longer employee, should they choose to remove themselves from a hostile work environment and file a grievance when discrimination is occurring in the workplace.",
                                     conflictid: "xxxxyyyyzzzzwwww",
+                                    images: {
+                                        image: [
+                                            {
+                                                image: "https://civilengineer-io.s3.amazonaws.com/YY72288A9MHHA7I2JQ6MN.jpg",
+                                                imageid: "88A9MHHA7I2JQ6MN"
+                                            }
+                                        ]
+                                    },
                                     arguements: {
                                         arguement: [
                                             {
@@ -91,6 +99,10 @@ export function MyUser() {
                                                         {
                                                             image: "https://civilengineer-io.s3.amazonaws.com/a1part1.jpg",
                                                             imageid: "ttttyyyyaaaabbbb"
+                                                        },
+                                                        {
+                                                            image: "https://civilengineer-io.s3.amazonaws.com/TWSX7DQETOILMI348O8A0.jpg",
+                                                            imageid: "DQETOILMI348O8A0"
                                                         }
                                                     ]
                                                 }
@@ -204,8 +216,16 @@ export function MyUser() {
                                     conflicts: {
                                         conflict: [
                                             {
-                                                conflict: "I am owed representation, or compensation in having had received representation, for the grievance that I filed against the Federal Bureau of Reclamation.",
+                                                conflict: "I have been owed representation by the National Federation of Federal Employees for the grievance that I filed against the Federal Bureau of Reclamation dealing with my harassment in the workplace. Employees are allowed to removed themselves from a hostile work environment and file a grievance if it involves harassment in the workplace. This is without penalty of loss of entitlement, in saying that they are no longer employee, should they choose to remove themselves from a hostile work environment and file a grievance when discrimination is occurring in the workplace.",
                                                 conflictid: "xxxxyyyyzzzzwwww",
+                                                images: {
+                                                    image: [
+                                                        {
+                                                            image: "https://civilengineer-io.s3.amazonaws.com/YY72288A9MHHA7I2JQ6MN.jpg",
+                                                            imageid: "88A9MHHA7I2JQ6MN"
+                                                        }
+                                                    ]
+                                                },
                                                 arguements: {
                                                     arguement: [
                                                         {
@@ -220,6 +240,10 @@ export function MyUser() {
                                                                     {
                                                                         image: "https://civilengineer-io.s3.amazonaws.com/a1part1.jpg",
                                                                         imageid: "ttttyyyyaaaabbbb"
+                                                                    },
+                                                                    {
+                                                                        image: "https://civilengineer-io.s3.amazonaws.com/TWSX7DQETOILMI348O8A0.jpg",
+                                                                        imageid: "DQETOILMI348O8A0"
                                                                     }
                                                                 ]
                                                             }

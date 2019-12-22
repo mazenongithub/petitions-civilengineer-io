@@ -3,7 +3,7 @@ import * as actions from './actions'
 import { connect } from 'react-redux';
 import { removeIconSmall, petitionidicon, redLeft, redRight, blueLeft, blueRight, saveAllPetitionsIcon, hideImageIcon, showImageIcon, addImageIcon, scrollImageUp, scrollImageDown, scrollImageLeft, scrollImageRight } from './svg';
 import { CreateConflict, CreatePetition, makeID, CreateArguement, formatUTCDateforDisplay, CreateImage } from './functions';
-import { SavePetitions, UploadPetitionImage } from './actions/api';
+import { SavePetitions, UploadPetitionImage, DeletePetitionImage } from './actions/api';
 
 
 class Petitions extends Component {
@@ -1334,7 +1334,7 @@ class Petitions extends Component {
             if (conflict.hasOwnProperty("images")) {
                 // eslint-disable-next-line
                 conflict.images.image.map((image, i) => {
-                    imagelist.push(<div className={`general-container regularFont ${this.checkactiveconflictimage(image.imageid)}`} onClick={() => { this.makeconflictimageactive(image.imageid) }}>Image {i + 1} {image.image}<span><button className="remove-icon-small general-button addLeftMargin">{removeIconSmall()}</button></span></div>)
+                    imagelist.push(<div className={`general-container regularFont ${this.checkactiveconflictimage(image.imageid)}`} onClick={() => { this.makeconflictimageactive(image.imageid) }} key={`${makeID(4)}${image.imageid}`}>Image {i + 1} {image.image}<span><button className="remove-icon-small general-button addLeftMargin">{removeIconSmall()}</button></span></div>)
                 })
             }
         }
@@ -1421,13 +1421,33 @@ class Petitions extends Component {
 
 
     }
+    async removearguementimage(imageid) {
+        console.log("removearguementimage")
+        if (this.props.myusermodel) {
+            let myuser = this.props.myusermodel;
+
+            let response = await DeletePetitionImage({ myuser }, imageid);
+            console.log(response)
+            if (response.response.hasOwnProperty("myuser")) {
+                this.props.reduxUser(response.response.myuser)
+                this.setState({ activearguementimageid: this.getactivearguementimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+            }
+
+
+        }
+    }
     imageslistfromarguement(arguement) {
         let arguementlist = [];
 
         if (arguement.hasOwnProperty("images")) {
             // eslint-disable-next-line
             arguement.images.image.map((image, i) => {
-                arguementlist.push(<div className={`general-container regularFont ${this.getactiveimageclass(image.imageid)}`} onClick={() => { this.makeimageactive(image.imageid) }}>Image {i + 1}{image.image}<span><button className="remove-icon-small general-button addLeftMargin">{removeIconSmall()}</button></span></div>)
+                arguementlist.push(<div className={`general-container regularFont ${this.getactiveimageclass(image.imageid)}`}
+                    key={`${makeID(4)}${image.imageid}`}>
+                    <span onClick={() => { this.makeimageactive(image.imageid) }} >Image {i + 1}{image.image}</span>
+                    <span>
+                        <button className="remove-icon-small general-button addLeftMargin" onClick={() => { this.removearguementimage(image.imageid) }}>{removeIconSmall()}</button></span>
+                </div>)
             })
 
         }
@@ -2125,7 +2145,7 @@ class Petitions extends Component {
                 {this.showconflicts()}
 
                 {this.showarguements()}
-                {this.showpetition()}
+
 
                 <div className="general-flex">
                     <div className="flex-1">
@@ -2139,6 +2159,7 @@ class Petitions extends Component {
                         </div>
                     </div>
                 </div>
+                {this.showpetition()}
 
 
 
