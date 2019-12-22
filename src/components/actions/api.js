@@ -114,10 +114,40 @@ export async function LoadAllUsers() {
         return resp.json();
     })
 }
-export async function UploadPetitionImage(formdata, imageid) {
+
+export async function UploadConflictImage(formdata, conflictid) {
 
 
-    var APIURL = `${process.env.REACT_APP_SERVER_API}/${imageid}/uploadpetitionimage`
+    var APIURL = `${process.env.REACT_APP_SERVER_API}/conflicts/${conflictid}/uploadpetitionimage`
+
+    return fetch(APIURL, {
+        method: 'post',
+        credentials: 'include',
+        body: formdata
+    })
+        .then(resp => {
+
+            if (!resp.ok) {
+                if (resp.status >= 400 && resp.status < 500) {
+                    return resp.json().then(data => {
+                        let err = { errorMessage: data.message };
+                        throw err;
+                    })
+                }
+                else {
+                    let err = { errorMessage: 'Please try again later, server is not responding' };
+                    throw err;
+                }
+            }
+
+            return resp.json();
+        })
+}
+
+export async function UploadArguementImage(formdata, arguementid) {
+
+
+    var APIURL = `${process.env.REACT_APP_SERVER_API}/arguements/${arguementid}/uploadpetitionimage`
 
     return fetch(APIURL, {
         method: 'post',

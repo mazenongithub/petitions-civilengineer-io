@@ -3,7 +3,7 @@ import * as actions from './actions'
 import { connect } from 'react-redux';
 import { removeIconSmall, petitionidicon, redLeft, redRight, blueLeft, blueRight, saveAllPetitionsIcon, hideImageIcon, showImageIcon, addImageIcon, scrollImageUp, scrollImageDown, scrollImageLeft, scrollImageRight } from './svg';
 import { CreateConflict, CreatePetition, makeID, CreateArguement, formatUTCDateforDisplay, CreateImage } from './functions';
-import { SavePetitions, UploadPetitionImage, DeletePetitionImage } from './actions/api';
+import { SavePetitions, UploadConflictImage, UploadArguementImage, DeletePetitionImage } from './actions/api';
 
 
 class Petitions extends Component {
@@ -1698,117 +1698,58 @@ class Petitions extends Component {
 
     }
     async uploadconflictimage() {
-        console.log("conflictuploader")
+
         let myuser = this.getmyuser()
         if (myuser) {
-            if (this.state.activepetitionid) {
-                let i = this.getactivepetitionposition();
 
-                if (this.state.activeconflictid) {
-                    let j = this.getactiveconflictposition();
-
-
-                    let conflict = this.getactiveconflict()
-
-                    let imageid = makeID(16)
-                    let image = "";
-                    let newImage = CreateImage(imageid, image)
-                    if (conflict.hasOwnProperty("images")) {
-
-                        myuser.petitions.petition[i].conflicts.conflict[j].images.image.push(newImage)
-
-                    } else {
-                        let images = { image: [newImage] }
-                        myuser.petitions.petition[i].conflicts.conflict[j].images = images;
-                    }
-                    this.props.reduxUser(myuser);
-
-                    let formData = new FormData();
-                    let myfile = document.getElementById("image-conflict");
-                    formData.append("profilephoto", myfile.files[0]);
-                    formData.append("myuser", JSON.stringify(myuser));
-                    let response = await UploadPetitionImage(formData, imageid);
-                    console.log(response)
-                    if (response.response.hasOwnProperty("myuser")) {
-                        this.props.reduxUser(response.response.myuser)
-                        this.setState({ activeconflictimageid: this.getactiveconflictimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
-                    }
-
-
-
-
-
-
+            if (this.state.activeconflictid) {
+                let conflictid = this.getactiveconflict().conflictid;
+                let formData = new FormData();
+                let myfile = document.getElementById("image-conflict");
+                formData.append("profilephoto", myfile.files[0]);
+                formData.append("myuser", JSON.stringify(myuser))
+                let response = await UploadConflictImage(formData, conflictid);
+                console.log(response)
+                if (response.response.hasOwnProperty("myuser")) {
+                    this.props.reduxUser(response.response.myuser)
+                    this.setState({ message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
                 }
+
+
+
+
 
 
             }
 
 
-
-
-            // HTML file input, chosen by user
-
-
-
-
         }
+
+
+
     }
     async uploadarguementimage() {
 
         let myuser = this.getmyuser()
         if (myuser) {
-            if (this.state.activepetitionid) {
-                let i = this.getactivepetitionposition();
-
-                if (this.state.activeconflictid) {
-                    let j = this.getactiveconflictposition();
-
-                    if (this.state.activearguementid) {
-                        let arguement = this.getactivearguement();
-                        let k = this.getactivearguementposition();
-                        let imageid = makeID(16)
-                        let image = "";
-                        let newImage = CreateImage(imageid, image)
-                        if (arguement.hasOwnProperty("images")) {
-
-                            myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images.image.push(newImage)
-
-                        } else {
-                            let images = { image: [newImage] }
-                            myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images = images;
-                        }
-                        this.props.reduxUser(myuser);
-                        let formData = new FormData();
-                        let myfile = document.getElementById("image-arguement");
-                        formData.append("profilephoto", myfile.files[0]);
-                        formData.append("myuser", JSON.stringify(myuser));
-                        let response = await UploadPetitionImage(formData, imageid);
-                        console.log(response)
-                        if (response.response.hasOwnProperty("myuser")) {
-                            this.props.reduxUser(response.response.myuser)
-                            this.setState({ activearguementimageid: this.getactivearguementimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
-                        }
-
-
-
-                    }
-
-
+            if (this.state.activearguementid) {
+                let arguementid = this.getactivearguement().arguementid;
+                let formData = new FormData();
+                let myfile = document.getElementById("image-arguement");
+                formData.append("profilephoto", myfile.files[0]);
+                formData.append("myuser", JSON.stringify(myuser));
+                let response = await UploadArguementImage(formData, arguementid);
+                console.log(response)
+                if (response.response.hasOwnProperty("myuser")) {
+                    this.props.reduxUser(response.response.myuser)
+                    this.setState({ message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
                 }
 
 
             }
-
-
-
-
-            // HTML file input, chosen by user
-
-
-
-
         }
+
+
     }
     showarguementimagemenu(arguement) {
         let arguementid = this.state.activearguementid;
