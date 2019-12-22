@@ -1348,7 +1348,7 @@ class Petitions extends Component {
                 return (
                     <div className="general-flex">
                         <div className="flex-3 showBorder">
-                            <span><input type="file" id="image-conflict" /></span><span><button className="addImageIcon general-button">{addImageIcon()}</button></span>
+                            <span><input type="file" id="image-conflict" /></span><span><button className="addImageIcon general-button" onClick={() => { this.uploadconflictimage() }}>{addImageIcon()}</button></span>
                         </div>
                         <div className="flex-4 showBorder">{this.imageslistfromconflict(conflict)}</div>
 
@@ -1366,7 +1366,7 @@ class Petitions extends Component {
             } else if (this.state.width > 800) {
                 return (
                     <div className="general-flex">
-                        <div className="flex-3 showBorder">  <span><input type="file" id="image-conflict" /></span><span><button className="addImageIcon general-button">{addImageIcon()}</button></span></div>
+                        <div className="flex-3 showBorder">  <span><input type="file" id="image-conflict" /></span><span><button className="addImageIcon general-button" onClick={() => { this.uploadconflictimage() }}>{addImageIcon()}</button></span></div>
                         <div className="flex-4 showBorder">{this.imageslistfromconflict(conflict)}</div>
                         <div className="flex-1 showBorder">
 
@@ -1385,13 +1385,13 @@ class Petitions extends Component {
                         <div className="flex-1">
 
                             <div className="general-flex">
-                                <div className="flex-1 showBorder"> <span><input type="file" id="image-conflict" /></span><span><button className="addImageIcon general-button">{addImageIcon()}</button></span></div>
+                                <div className="flex-1 showBorder"> <span><input type="file" id="image-conflict" /></span><span><button className="addImageIcon general-button" onClick={() => { this.uploadconflictimage() }}>{addImageIcon()}</button></span></div>
                                 <div className="flex-2 showBorder">{this.imageslistfromconflict(conflict)}</div>
                             </div>
 
                             <div className="general-flex">
-                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll" onClick={() => { this.moveconflictlistdown(conflict.conflictid) }}>{scrollImageLeft()}</button></div>
-                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll" onClick={() => { this.moveconflictlistup(conflict.conflictid) }}>{scrollImageRight()}</button></div>
+                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll" onClick={() => { this.moveconflictlistup(conflict.conflictid) }}>{scrollImageLeft()}</button></div>
+                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll" onClick={() => { this.moveconflictlistdown(conflict.conflictid) }}>{scrollImageRight()}</button></div>
                             </div>
 
                         </div>
@@ -1600,7 +1600,33 @@ class Petitions extends Component {
             }
         }
     }
-    getactiveimagefromresponse(myuser, imageid) {
+    getactiveconflictimagefromresponse(myuser, imageid) {
+        let activeimageid = false;
+        if (myuser.hasOwnProperty("petitions")) {
+            // eslint-disable-next-line
+            myuser.petitions.petition.map(petition => {
+                if (petition.hasOwnProperty("conflicts")) {
+                    // eslint-disable-next-line
+                    petition.conflicts.conflict.map(conflict => {
+                        if (conflict.hasOwnProperty("images")) {
+                            // eslint-disable-next-line
+                            conflict.images.image.map(image => {
+                                if (image.imageid === imageid) {
+                                    activeimageid = imageid;
+                                }
+                            })
+
+                        }
+                    })
+
+                }
+
+            })
+        }
+        return activeimageid;
+
+    }
+    getactivearguementimagefromresponse(myuser, imageid) {
         let activeimageid = false;
         if (myuser.hasOwnProperty("petitions")) {
             // eslint-disable-next-line
@@ -1629,6 +1655,63 @@ class Petitions extends Component {
         }
         return activeimageid;
 
+    }
+    async uploadconflictimage() {
+        console.log("conflictuploader")
+        let myuser = this.getmyuser()
+        if (myuser) {
+            if (this.state.activepetitionid) {
+                let i = this.getactivepetitionposition();
+
+                if (this.state.activeconflictid) {
+                    let j = this.getactiveconflictposition();
+
+
+                    let conflict = this.getactiveconflict()
+
+                    let imageid = makeID(16)
+                    let image = "";
+                    let newImage = CreateImage(imageid, image)
+                    if (conflict.hasOwnProperty("images")) {
+
+                        myuser.petitions.petition[i].conflicts.conflict[j].images.image.push(newImage)
+
+                    } else {
+                        let images = { image: [newImage] }
+                        myuser.petitions.petition[i].conflicts.conflict[j].images = images;
+                    }
+                    this.props.reduxUser(myuser);
+
+                    let formData = new FormData();
+                    let myfile = document.getElementById("image-conflict");
+                    formData.append("profilephoto", myfile.files[0]);
+                    formData.append("myuser", JSON.stringify(myuser));
+                    let response = await UploadPetitionImage(formData, imageid);
+                    console.log(response)
+                    if (response.response.hasOwnProperty("myuser")) {
+                        this.props.reduxUser(response.response.myuser)
+                        this.setState({ activeconflictimageid: this.getactiveconflictimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                    }
+
+
+
+
+
+
+                }
+
+
+            }
+
+
+
+
+            // HTML file input, chosen by user
+
+
+
+
+        }
     }
     async uploadarguementimage() {
 
@@ -1663,7 +1746,7 @@ class Petitions extends Component {
                         console.log(response)
                         if (response.response.hasOwnProperty("myuser")) {
                             this.props.reduxUser(response.response.myuser)
-                            this.setState({ activearguementimageid: this.getactiveimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                            this.setState({ activearguementimageid: this.getactivearguementimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
                         }
 
 
@@ -1735,8 +1818,13 @@ class Petitions extends Component {
                             </div>
 
                             <div className="general-flex">
-                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll" onClick={() => { this.movearguementimagedown(arguement) }}>{scrollImageLeft()}</button></div>
-                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll" onClick={() => { this.movearguementimageup(arguement) }}>{scrollImageRight()}</button></div>
+                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll"
+                                    onClick={() => { this.movearguementimageup(arguement) }}
+
+                                >{scrollImageLeft()}</button></div>
+                                <div className="flex-1 showBorder alignCenter"><button className="general-button image-scroll"
+                                    onClick={() => { this.movearguementimagedown(arguement) }}
+                                >{scrollImageRight()}</button></div>
                             </div>
 
                         </div>
