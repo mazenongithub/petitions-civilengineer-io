@@ -1843,6 +1843,13 @@ class Petitions extends Component {
             return;
         }
     }
+    handleshowconflictmenu(conflictid) {
+        if (this.state.activeconflictid === conflictid) {
+            return (this.showconflicts());
+        } else {
+            return;
+        }
+    }
     showpetitionconflict(conflict, seq) {
         return (<div className="general-flex" key={conflict.conflictid}>
             <div className={`flex-1`}>
@@ -1852,6 +1859,7 @@ class Petitions extends Component {
                         <span className="titleFont">Conflict#{seq + 1}</span><span onClick={event => { this.makeconflictactive(conflict.conflictid) }} className={`regularFont ${this.getactiveconflictdisplay(conflict.conflictid)}`}>{conflict.conflict}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => this.removeConflict(conflict.conflictid)}>{removeIconSmall()}</button></span>
                     </div>
                 </div>
+                {this.handleshowconflictmenu(conflict.conflictid)}
                 {this.showconflictimagemenu(conflict)}
                 {this.conflictimagedropdown(conflict)}
 
@@ -2092,6 +2100,11 @@ class Petitions extends Component {
         return arguementimages;
 
     }
+    handleshowarguements(arguementid) {
+        if (this.state.activearguementid === arguementid) {
+            return (this.showarguements())
+        }
+    }
     showpetitionarguement(arguement, i) {
 
         return (
@@ -2104,6 +2117,7 @@ class Petitions extends Component {
                             <span className="titleFont">Arguement#{i + 1}</span> <span onClick={() => { this.makearguementactive(arguement.arguementid) }} className={`regularFont ${this.getactivearguementdisplay(arguement.arguementid)}`}>{arguement.arguement}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => { this.removeArguement(arguement.arguementid) }}>{removeIconSmall()}</button></span>
                         </div>
                     </div>
+                    {this.handleshowarguements(arguement.arguementid)}
                     {this.showarguementimagemenu(arguement)}
                     {this.showarguementimages(arguement)}
                 </div>

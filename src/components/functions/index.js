@@ -30,7 +30,7 @@ export function CreateConflict(conflictid, petitionid, conflict) {
     return ({ conflictid, petitionid, conflict })
 
 }
-export function CreateImage(imageid, image) {
+export function CreateImage(imageid, image, display) {
     return ({ imageid, image })
 }
 export function CreatePetition(petitionid, petition, versus) {
