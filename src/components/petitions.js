@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
 import { removeIconSmall, petitionidicon, redLeft, redRight, blueLeft, blueRight, saveAllPetitionsIcon, hideImageIcon, showImageIcon, addImageIcon, scrollImageUp, scrollImageDown, scrollImageLeft, scrollImageRight } from './svg';
-import { CreateConflict, CreatePetition, makeID, CreateArguement, formatUTCDateforDisplay, CreateImage } from './functions';
+import { CreateConflict, CreatePetition, makeID, CreateArguement, formatUTCDateforDisplay } from './functions';
 import { SavePetitions, UploadConflictImage, UploadArguementImage, DeletePetitionImage } from './actions/api';
 
 
@@ -1052,22 +1052,43 @@ class Petitions extends Component {
         }
         return position;
     }
-    removeConflict(conflictid) {
-        if (window.confirm('Removing Conflict will remove arguements')) {
-            if (this.props.myusermodel) {
-                let myuser = this.props.myusermodel;
-
-                let i = this.getactivepetitionposition();
-                let j = this.getconflictpositionbyid(conflictid);
-
-                myuser.petitions.petition[i].conflicts.conflict.splice(j, 1);
-                if (myuser.petitions.petition[i].conflicts.conflict.length === 0) {
-                    delete myuser.petitions.petition[i].conflicts.conflict;
-                    delete myuser.petitions.petition[i].conflicts;
+    validateremoveconflict(conflictid) {
+        let validate = true;
+        let conflict = this.getconflictfromid(conflictid);
+        if (conflict.hasOwnProperty("images")) {
+            validate = false;
+        }
+        if (conflict.hasOwnProperty("arguements")) {
+            // eslint-disable-next-line
+            conflict.arguements.arguement.map(arguement => {
+                if (arguement.hasOwnProperty("images")) {
+                    validate = false;
                 }
-                this.props.reduxUser(myuser);
-                this.setState({ activearguementid: "", activeconflictid: "" })
+            })
+        }
+        return validate;
+    }
+    removeConflict(conflictid) {
 
+        if (window.confirm('Removing Conflict will remove arguements')) {
+            if (this.validateremoveconflict(conflictid)) {
+                if (this.props.myusermodel) {
+                    let myuser = this.props.myusermodel;
+
+                    let i = this.getactivepetitionposition();
+                    let j = this.getconflictpositionbyid(conflictid);
+
+                    myuser.petitions.petition[i].conflicts.conflict.splice(j, 1);
+                    if (myuser.petitions.petition[i].conflicts.conflict.length === 0) {
+                        delete myuser.petitions.petition[i].conflicts.conflict;
+                        delete myuser.petitions.petition[i].conflicts;
+                    }
+                    this.props.reduxUser(myuser);
+                    this.setState({ activearguementid: "", activeconflictid: "" })
+
+                }
+            } else {
+                alert('Please remove nested images underneath the conflict prior to removing')
             }
         }
 
@@ -1703,23 +1724,22 @@ class Petitions extends Component {
         if (myuser) {
 
             if (this.state.activeconflictid) {
-                let conflictid = this.getactiveconflict().conflictid;
-                let formData = new FormData();
-                let myfile = document.getElementById("image-conflict");
-                formData.append("profilephoto", myfile.files[0]);
-                formData.append("myuser", JSON.stringify(myuser))
-                let response = await UploadConflictImage(formData, conflictid);
-                console.log(response)
-                if (response.response.hasOwnProperty("myuser")) {
-                    let activeconflictimageid = response.response.activeimageid;
-                    this.props.reduxUser(response.response.myuser)
-                    this.setState({ activeconflictimageid, message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                try {
+                    let conflictid = this.getactiveconflict().conflictid;
+                    let formData = new FormData();
+                    let myfile = document.getElementById("image-conflict");
+                    formData.append("profilephoto", myfile.files[0]);
+                    formData.append("myuser", JSON.stringify(myuser))
+                    let response = await UploadConflictImage(formData, conflictid);
+                    console.log(response)
+                    if (response.response.hasOwnProperty("myuser")) {
+                        let activeconflictimageid = response.response.activeimageid;
+                        this.props.reduxUser(response.response.myuser)
+                        this.setState({ activeconflictimageid, message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                    }
+                } catch (err) {
+                    alert(err)
                 }
-
-
-
-
-
 
             }
 
@@ -1734,20 +1754,24 @@ class Petitions extends Component {
         let myuser = this.getmyuser()
         if (myuser) {
             if (this.state.activearguementid) {
-                let arguementid = this.getactivearguement().arguementid;
-                let formData = new FormData();
-                let myfile = document.getElementById("image-arguement");
-                formData.append("profilephoto", myfile.files[0]);
-                formData.append("myuser", JSON.stringify(myuser));
-                let response = await UploadArguementImage(formData, arguementid);
-                console.log(response)
-                if (response.response.hasOwnProperty("myuser")) {
-                    let activearguementimageid = response.response.activeimageid;
-                    this.props.reduxUser(response.response.myuser)
-                    this.setState({ activearguementimageid, message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                try {
+                    let arguementid = this.getactivearguement().arguementid;
+                    let formData = new FormData();
+                    let myfile = document.getElementById("image-arguement");
+                    formData.append("profilephoto", myfile.files[0]);
+                    formData.append("myuser", JSON.stringify(myuser));
+
+                    let response = await UploadArguementImage(formData, arguementid);
+                    console.log(response)
+                    if (response.response.hasOwnProperty("myuser")) {
+                        let activearguementimageid = response.response.activeimageid;
+                        this.props.reduxUser(response.response.myuser)
+                        this.setState({ activearguementimageid, message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                    }
+
+                } catch (err) {
+                    alert(err)
                 }
-
-
             }
         }
 
@@ -1862,8 +1886,32 @@ class Petitions extends Component {
         }
 
     }
+    getarguementbyid(arguementid) {
+        let arguements = false;
+
+        if (this.state.activepetitionid) {
+            let petition = this.getactivepetition();
+            if (petition.hasOwnProperty("conflicts")) {
+                // eslint-disable-next-line
+                petition.conflicts.conflict.map((conflict, i) => {
+                    if (conflict.hasOwnProperty("arguements")) {
+                        // eslint-disable-next-line
+                        conflict.arguements.arguement.map((arguement) => {
+                            if (arguement.arguementid === arguementid) {
+                                arguements = arguement;
+
+                            }
+                        })
+                    }
+                })
+            }
+        }
+
+        return arguements;
+    }
     getarguementkeysbyid(arguementid) {
         let key = [];
+        console.log("getkeys", arguementid)
         if (this.state.activepetitionid) {
             let petition = this.getactivepetition();
             if (petition.hasOwnProperty("conflicts")) {
@@ -1886,26 +1934,40 @@ class Petitions extends Component {
         return key;
     }
 
+    validateremovearguement(arguementid) {
+        let validate = true;
+        let arguement = this.getarguementbyid(arguementid)
+        if (arguement.hasOwnProperty("images")) {
+            validate = false;
+        }
+        return validate;
+    }
     removeArguement(arguementid) {
         if (window.confirm('Press ok then Save to permenantly erase arguement')) {
-            if (this.props.myusermodel) {
-                let myuser = this.props.myusermodel;
-                if (this.state.activepetitionid) {
-                    let i = this.getactivepetitionposition();
-                    let arguementkeys = this.getarguementkeysbyid(arguementid)
-                    let j = arguementkeys[0];
-                    let k = arguementkeys[1];
+            if (this.validateremovearguement(arguementid)) {
+                if (this.props.myusermodel) {
+                    let myuser = this.props.myusermodel;
+                    if (this.state.activepetitionid) {
 
-                    myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement.splice(k, 1);
-                    if (myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement.length === 0) {
-                        delete myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement;
-                        delete myuser.petitions.petition[i].conflicts.conflict[j].arguements;
+                        let i = this.getactivepetitionposition();
+                        let arguementkeys = this.getarguementkeysbyid(arguementid)
+                        let j = arguementkeys[0];
+                        let k = arguementkeys[1];
+
+                        myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement.splice(k, 1);
+                        if (myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement.length === 0) {
+                            delete myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement;
+                            delete myuser.petitions.petition[i].conflicts.conflict[j].arguements;
+                        }
+                        this.props.reduxUser(myuser);
+
+                        this.setState({ activearguementid: false })
+
                     }
-                    this.props.reduxUser(myuser);
-
-                    this.setState({ activearguementid: false })
-
                 }
+            } else {
+                alert(`Please remove nested images prior to removing arguement`)
+
             }
         }
 
@@ -2039,7 +2101,7 @@ class Petitions extends Component {
 
                     <div className="general-flex addLeftMargin">
                         <div className="flex-1">
-                            <span className="titleFont">Arguement#{i + 1}</span> <span onClick={() => { this.makearguementactive(arguement.arguementid) }} className={`regularFont ${this.getactivearguementdisplay(arguement.arguementid)}`}>{arguement.arguement}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => { this.removeArguement(arguement.argumentid) }}>{removeIconSmall()}</button></span>
+                            <span className="titleFont">Arguement#{i + 1}</span> <span onClick={() => { this.makearguementactive(arguement.arguementid) }} className={`regularFont ${this.getactivearguementdisplay(arguement.arguementid)}`}>{arguement.arguement}</span><span><button className="general-button remove-icon-small addLeftMargin" onClick={() => { this.removeArguement(arguement.arguementid) }}>{removeIconSmall()}</button></span>
                         </div>
                     </div>
                     {this.showarguementimagemenu(arguement)}
