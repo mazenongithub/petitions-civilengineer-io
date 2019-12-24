@@ -524,6 +524,11 @@ class Petitions extends Component {
 
 
     }
+    cleararguementid() {
+        if (this.state.activearguementid) {
+            this.setState({ activearguementid: false })
+        }
+    }
     showarguements() {
         if (this.state.activepetitionid) {
 
@@ -548,7 +553,7 @@ class Petitions extends Component {
                                                     {blueLeft()}
                                                 </button>
                                             </div>
-                                            <div className="flex-1 noBorder titleFont alignCenter">
+                                            <div className="flex-1 noBorder titleFont alignCenter" onClick={() => { this.cleararguementid() }}>
                                                 {this.handleactivearguementposition()}
                                             </div>
                                             <div className="flex-1 noBorder alignRight">
@@ -595,7 +600,7 @@ class Petitions extends Component {
 
                         </div>
 
-
+                        {this.showsavebutton()}
 
                     </div>
                 </div>
@@ -900,7 +905,11 @@ class Petitions extends Component {
             }
         }
     }
-
+    clearconflictid() {
+        if (this.state.activeconflictid) {
+            this.setState({ activeconflictid: false })
+        }
+    }
     showconflicts() {
         if (this.state.activepetitionid) {
 
@@ -925,7 +934,7 @@ class Petitions extends Component {
                                                     {blueLeft()}
                                                 </button>
                                             </div>
-                                            <div className="flex-1 noBorder titleFont alignCenter">
+                                            <div className="flex-1 noBorder titleFont alignCenter" onClick={() => this.clearconflictid()}>
                                                 {this.handleactiveconflictposition()}
                                             </div>
                                             <div className="flex-1 noBorder alignRight">
@@ -936,6 +945,8 @@ class Petitions extends Component {
                                         </div>
                                     </div>
                                 </div>
+
+
                             </div>
                         </div>
 
@@ -972,7 +983,7 @@ class Petitions extends Component {
 
                         </div>
 
-
+                        {this.showsavebutton()}
 
                     </div>
                 </div>
@@ -2162,6 +2173,20 @@ class Petitions extends Component {
             alert(err)
         }
     }
+    showsavebutton() {
+        return (<div className="general-flex">
+            <div className="flex-1">
+                <div className="general-container regularFont alignCenter">
+                    {this.state.message}
+                </div>
+                <div className="general-container alignCenter">
+                    <button className="login-button general-button" onClick={() => this.saveallpetition()}>
+                        {saveAllPetitionsIcon()}
+                    </button>
+                </div>
+            </div>
+        </div>)
+    }
     render() {
         return (<div className="general-flex">
             <div className="flex-1">
@@ -2186,19 +2211,6 @@ class Petitions extends Component {
 
                 {this.showarguements()}
 
-
-                <div className="general-flex">
-                    <div className="flex-1">
-                        <div className="general-container regularFont alignCenter">
-                            {this.state.message}
-                        </div>
-                        <div className="general-container alignCenter">
-                            <button className="login-button general-button" onClick={() => this.saveallpetition()}>
-                                {saveAllPetitionsIcon()}
-                            </button>
-                        </div>
-                    </div>
-                </div>
                 {this.showpetition()}
 
 
