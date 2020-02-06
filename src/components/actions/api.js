@@ -144,11 +144,12 @@ export async function UploadConflictImage(formdata, conflictid) {
         })
 }
 
+
+
 export async function UploadArguementImage(formdata, arguementid) {
 
 
     var APIURL = `${process.env.REACT_APP_SERVER_API}/arguements/${arguementid}/uploadpetitionimage`
-
     return fetch(APIURL, {
         method: 'post',
         credentials: 'include',

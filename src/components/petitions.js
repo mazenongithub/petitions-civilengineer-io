@@ -1767,12 +1767,14 @@ class Petitions extends Component {
             if (this.state.activearguementid) {
                 try {
                     let arguementid = this.getactivearguement().arguementid;
-                    let formData = new FormData();
+                    console.log(arguementid)
+                    delete myuser.allusers;
+                    let formdata = new FormData();
                     let myfile = document.getElementById("image-arguement");
-                    formData.append("profilephoto", myfile.files[0]);
-                    formData.append("myuser", JSON.stringify(myuser));
+                    formdata.append("profilephoto", myfile.files[0]);
 
-                    let response = await UploadArguementImage(formData, arguementid);
+                    formdata.append("myuser", JSON.stringify(myuser));
+                    let response = await UploadArguementImage(formdata, arguementid);
                     console.log(response)
                     if (response.response.hasOwnProperty("myuser")) {
                         let activearguementimageid = response.response.activeimageid;
