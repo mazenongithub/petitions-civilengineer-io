@@ -3,7 +3,8 @@ import * as actions from './actions'
 import { connect } from 'react-redux';
 import { removeIconSmall, petitionidicon, redLeft, redRight, blueLeft, blueRight, saveAllPetitionsIcon, hideImageIcon, showImageIcon, addImageIcon, scrollImageUp, scrollImageDown, scrollImageLeft, scrollImageRight } from './svg';
 import { CreateConflict, CreatePetition, makeID, CreateArguement, formatUTCDateforDisplay } from './functions';
-import { SavePetitions, UploadConflictImage, UploadArguementImage, DeletePetitionImage } from './actions/api';
+import { UploadConflictImage, UploadArguementImage, DeletePetitionImage } from './actions/api';
+import Petition from './petition';
 
 
 class Petitions extends Component {
@@ -2155,34 +2156,16 @@ class Petitions extends Component {
         }
         return showpetition;
     }
-    async saveallpetition() {
-        try {
-            if (this.props.myusermodel) {
-                let myuser = this.props.myusermodel;
 
-                let response = await SavePetitions({ myuser });
-                console.log(response)
-                if (response.response.hasOwnProperty("myuser")) {
-                    myuser = response.response.myuser
-                    this.props.reduxUser(myuser)
-                    this.setState({ message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
-                    if (myuser.hasOwnProperty("allusers")) {
-                        this.props.reduxAllUsers(myuser.allusers)
-                    }
-                }
-            }
-        } catch (err) {
-            alert(err)
-        }
-    }
     showsavebutton() {
+        const petition = new Petition();
         return (<div className="general-flex">
             <div className="flex-1">
                 <div className="general-container regularFont alignCenter">
                     {this.state.message}
                 </div>
                 <div className="general-container alignCenter">
-                    <button className="login-button general-button" onClick={() => this.saveallpetition()}>
+                    <button className="login-button general-button" onClick={() => petition.saveallpetition.call(this)}>
                         {saveAllPetitionsIcon()}
                     </button>
                 </div>

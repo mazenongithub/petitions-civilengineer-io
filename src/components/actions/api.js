@@ -1,3 +1,34 @@
+export async function RegisterUser(values) {
+
+    let APIURL = `${process.env.REACT_APP_SERVER_API}/users/register`;
+    return fetch(APIURL, {
+        method: 'post',
+        credentials: 'include',
+        headers: new Headers({
+            'Content-Type': 'application/json',
+        }),
+
+        body: JSON.stringify(values)
+    })
+        .then(resp => {
+
+            if (!resp.ok) {
+                if (resp.status >= 400 && resp.status < 500) {
+                    return resp.json().then(data => {
+                        let err = { errorMessage: data.message };
+                        throw err;
+                    })
+                }
+                else {
+                    let err = { errorMessage: 'Please try again later, server is not responding' };
+                    throw err;
+                }
+            }
+
+            return resp.json();
+        })
+
+}
 export async function LoginUser(values) {
 
     let APIURL = `${process.env.REACT_APP_SERVER_API}/users/login`;
@@ -144,7 +175,59 @@ export async function UploadConflictImage(formdata, conflictid) {
         })
 }
 
+export async function CheckUserID(userid) {
 
+    var APIURL = `${process.env.REACT_APP_SERVER_API}/${userid}/checkuserid`
+    console.log(APIURL)
+
+    return fetch(APIURL)
+        .then(resp => {
+
+            if (!resp.ok) {
+                if (resp.status >= 400 && resp.status < 500) {
+                    return resp.json().then(data => {
+                        let err = { errorMessage: data.message };
+                        throw err;
+                    })
+                }
+                else {
+                    let err = { errorMessage: 'Please try again later, server is not responding' };
+                    throw err;
+                }
+            }
+
+            return resp.json();
+        })
+}
+
+export async function CheckEmailAddress(emailaddress) {
+
+
+    var APIURL = `${process.env.REACT_APP_SERVER_API}/${emailaddress}/checkemailaddress`
+    console.log(APIURL)
+
+    return fetch(APIURL, {
+        credentials: 'same-origin'
+
+    })
+        .then(resp => {
+
+            if (!resp.ok) {
+                if (resp.status >= 400 && resp.status < 500) {
+                    return resp.json().then(data => {
+                        let err = { errorMessage: data.message };
+                        throw err;
+                    })
+                }
+                else {
+                    let err = { errorMessage: 'Please try again later, server is not responding' };
+                    throw err;
+                }
+            }
+
+            return resp.json();
+        })
+}
 
 export async function UploadArguementImage(formdata, arguementid) {
 

@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { radioOpen, radioClosed, saveAllPetitionsIcon, cameraIcon } from './svg';
 import { formatUTCDateforDisplay, } from './functions';
 import { Link } from 'react-router-dom';
-import { SavePetitions, UploadProfileImage } from './actions/api';
+import { UploadProfileImage } from './actions/api';
+import Petition from './petition';
 class Profile extends Component {
     constructor(props) {
         super(props);
@@ -18,7 +19,7 @@ class Profile extends Component {
             lastname: '',
             gender: '',
             emailaddress: '',
-            organization: '',
+            phonenumber: '',
 
         }
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this)
@@ -44,26 +45,7 @@ class Profile extends Component {
             return this.props.myusermodel.gender;
         }
     }
-    async saveallpetition() {
-        try {
-            if (this.props.myusermodel) {
-                let myuser = this.props.myusermodel;
-                console.log(myuser)
-                let response = await SavePetitions({ myuser });
-                console.log(response)
-                if (response.response.hasOwnProperty("myuser")) {
-                    this.props.reduxUser(response.response.myuser)
-                    this.setState({ message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
-                    if (myuser.hasOwnProperty("allusers")) {
-                        this.props.reduxAllUsers(myuser.allusers)
-                    }
 
-                }
-            }
-        } catch (err) {
-            alert(err)
-        }
-    }
     handleradioiconfemale() {
         let myuser = this.getuser();
         if (myuser.gender === "female") {
@@ -127,7 +109,7 @@ class Profile extends Component {
 
     }
     responsivelayout() {
-
+        const petition = new Petition();
         if (this.state.width > 800) {
             return (
                 <div className="general-flex">
@@ -148,30 +130,17 @@ class Profile extends Component {
 
                         <div className="general-flex">
                             <div className="flex-1  regularFont">
-
-                                Male
-                                <button className="general-radio general-button " onClick={() => { this.handleradiomale() }}>
-                                    {this.handleradioiconmale()}
-                                </button>
-                                <span className="addLeftMargin">
-                                    Female
-                                    <button className="general-radio general-button " onClick={() => { this.handleradiofemale() }}>
-                                        {this.handleradioiconfemale()}
-                                    </button>
-                                </span>
-
+                                Phone Number <br />
+                                <input type="text" className="general-field regularFont" value={this.getphonenumber()} onChange={event => { this.handlephonenumber(event.target.value) }} />
                             </div>
-                            <div className="flex-1  regularFont">
+                            <div className="flex-1  regularFont addLeftMargin">
                                 Email Address <br />
                                 <input type="text" value={this.getemailaddress()} onChange={event => { this.handleemailaddress(event.target.value) }} className="general-field regularFont" />
                             </div>
                         </div>
 
                         <div className="general-flex">
-                            <div className="flex-1  regularFont">
-                                Organization <br />
-                                <input type="text" className="general-field regularFont" value={this.getorganization()} onChange={event => { this.handleorganization(event.target.value) }} />
-                            </div>
+
                             <div className="flex-1  regularFont">
 
 
@@ -201,7 +170,7 @@ class Profile extends Component {
                                     {this.state.message}
                                 </div>
                                 <div className="general-container alignCenter">
-                                    <button className="login-button general-button" onClick={() => this.saveallpetition()}>
+                                    <button className="login-button general-button" onClick={() => petition.saveallpetition.call(this)}>
                                         {saveAllPetitionsIcon()}
                                     </button>
                                 </div>
@@ -241,25 +210,13 @@ class Profile extends Component {
                         <div className="general-flex ">
                             <div className="flex-1">
                                 <div className="general-container  regularFont">
-
-                                    Male
-                                <button className="general-radio general-button" onClick={() => { this.handleradiomale() }}>
-                                        {this.handleradioiconmale()}
-                                    </button>
-                                    <span className="addLeftMargin">
-                                        Female
-                                    <button className="general-radio general-button" onClick={() => { this.handleradiofemale() }}>
-                                            {this.handleradioiconfemale()}
-                                        </button>
-                                    </span>
+                                    Phone Number <br />
+                                    <input type="text" value={this.getphonenumber()} onChange={event => { this.handlephonenumber(event.target.value) }} className="general-field regularFont" />
                                 </div>
-                                <div className="general-container  regularFont">
+
+                                <div className="general-container addLeftMargin regularFont">
                                     Email Address <br />
                                     <input type="text" value={this.getemailaddress()} onChange={event => { this.handleemailaddress(event.target.value) }} className="general-field regularFont" />
-                                </div>
-                                <div className="general-container  regularFont">
-                                    Organization <br />
-                                    <input type="text" value={this.getorganization()} onChange={event => { this.handleorganization(event.target.value) }} className="general-field regularFont" />
                                 </div>
 
                                 <div className="general-container showBorder regularFont">
@@ -279,7 +236,7 @@ class Profile extends Component {
                                     {this.state.message}
                                 </div>
                                 <div className="general-container alignCenter">
-                                    <button className="login-button general-button" onClick={() => this.saveallpetition()}>
+                                    <button className="login-button general-button" onClick={() => petition.saveallpetition.call(this)}>
                                         {saveAllPetitionsIcon()}
                                     </button>
                                 </div>
@@ -332,13 +289,13 @@ class Profile extends Component {
         this.props.reduxUser(myuser);
         this.setState({ render: 'render' })
     }
-    getorganization() {
+    getphonenumber() {
         let myuser = this.getuser();
-        return myuser.organization;
+        return myuser.phonenumber;
     }
-    handleorganization(organization) {
+    handlephonenumber(phonenumber) {
         let myuser = this.getuser();
-        myuser.organization = organization;
+        myuser.phonenumber = phonenumber;
         this.props.reduxUser(myuser);
         this.setState({ render: 'render' })
     }
@@ -399,7 +356,8 @@ class Profile extends Component {
 
 function mapStateToProps(state) {
     return {
-        myusermodel: state.myusermodel
+        myusermodel: state.myusermodel,
+        allusers: state.allusers
     }
 }
 

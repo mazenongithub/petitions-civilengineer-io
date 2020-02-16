@@ -22,3 +22,6 @@
 .scrollimagedown-1{fill:#ededed;stroke:#000;stroke-miterlimit:10;stroke-width:2px;}
 .scrollimageright-1{fill:#ededed;stroke:#000;stroke-miterlimit:10;stroke-width:2px;}
 .scrollimageleft-1{fill:#ededed;stroke:#000;stroke-miterlimit:10;stroke-width:2px;}
+.checkclientidicon-1 {fill: #005c02;}.checkclientidicon-1,.checkclientidicon-2 { stroke: #001700; stroke-miterlimit: 10;}.checkclientidicon-2 {fill: #e8bc00; stroke-width: 0.5px;}
+.registericon-1{fill:#6aaaef;stroke:#000;stroke-miterlimit:10;}.registericon-2{font-size:64px;font-family:NotoSerif-Bold, Noto Serif;font-weight:700;letter-spacing:0.08em;}
+.loginicon-1{fill:#eadd92;stroke:#333;stroke-miterlimit:10;stroke-width:2px;}.loginicon-2{font-size:74px;font-family:NotoSerif-BoldItalic, Noto Serif;font-weight:700;font-style:italic;letter-spacing:0.09em;}

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { headerIcon } from './svg'
+import { headerIcon } from './svg';
+import Petition from './petition';
 
 class Header extends Component {
 
@@ -12,7 +13,7 @@ class Header extends Component {
             let userid = this.props.myusermodel.userid;
             if (this.props.myusermodel.hasOwnProperty("message")) {
                 return (
-                    <Link to={`/users/register`} className="general-link regularFont">/register(login)</Link>)
+                    <Link to={`/users/register`} className="general-link regularFont">/register</Link>)
             } else if (this.props.myusermodel.hasOwnProperty("userid")) {
                 const url = `${process.env.REACT_APP_SERVER_API}/users/${userid}/logout`;
                 return (<a href={url} className="general-link regularFont"> logout </a>)
@@ -25,18 +26,17 @@ class Header extends Component {
 
     }
     handleleftheader() {
-        if (this.props.myusermodel) {
-            let userid = this.props.myusermodel.userid;
-            if (this.props.myusermodel.hasOwnProperty("message")) {
-                return;
-            } else if (this.props.myusermodel.hasOwnProperty("userid")) {
+        const petition = new Petition();
+        const myuser = petition.getuser.call(this)
 
-                return (<Link to={`/${userid}/profile`} className="general-link regularFont"> /{userid} </Link>)
+        if (myuser) {
 
-            } else {
-                return;
-            }
+            return (<Link to={`/${myuser.userid}/profile`} className="general-link regularFont"> /{myuser.userid} </Link>)
+
+        } else {
+            return (<Link to={`/users/login`} className="general-link regularFont"> /login </Link>)
         }
+
 
 
     }
