@@ -1,6 +1,9 @@
+import React from 'react';
 import { CheckUserID, CheckEmailAddress } from './actions/api'
 import { SavePetitions } from './actions/api';
 import { formatUTCDateforDisplay } from './functions';
+import { saveAllPetitionsIcon } from './svg';
+
 class Petition {
     getgocheck() {
         if (this.state.width > 1200) {
@@ -173,7 +176,21 @@ class Petition {
             })
         }
     }
-
+    showsavebutton() {
+        const petition = new Petition();
+        return (<div className="general-flex">
+            <div className="flex-1">
+                <div className="general-container regularFont alignCenter">
+                    {this.state.message}
+                </div>
+                <div className="general-container alignCenter">
+                    <button className="login-button general-button" onClick={() => petition.saveallpetition.call(this)}>
+                        {saveAllPetitionsIcon()}
+                    </button>
+                </div>
+            </div>
+        </div>)
+    }
 
 }
 

@@ -531,6 +531,7 @@ class Petitions extends Component {
         }
     }
     showarguements() {
+        const petition = new Petition();
         if (this.state.activepetitionid) {
 
 
@@ -601,7 +602,7 @@ class Petitions extends Component {
 
                         </div>
 
-                        {this.showsavebutton()}
+                        {petition.showsavebutton.call(this)}
 
                     </div>
                 </div>
@@ -912,6 +913,7 @@ class Petitions extends Component {
         }
     }
     showconflicts() {
+        const petition = new Petitions();
         if (this.state.activepetitionid) {
 
 
@@ -984,7 +986,7 @@ class Petitions extends Component {
 
                         </div>
 
-                        {this.showsavebutton()}
+                        {petition.showsavebutton.call(this)}
 
                     </div>
                 </div>
@@ -1461,7 +1463,6 @@ class Petitions extends Component {
         if (window.confirm(`Are you sure you want to delete image ?`)) {
             if (this.props.myusermodel) {
                 let myuser = this.props.myusermodel;
-
                 let response = await DeletePetitionImage({ myuser }, imageid);
                 console.log(response)
                 if (response.response.hasOwnProperty("myuser")) {
@@ -1480,9 +1481,9 @@ class Petitions extends Component {
 
                 let response = await DeletePetitionImage({ myuser }, imageid);
                 console.log(response)
-                if (response.response.hasOwnProperty("myuser")) {
-                    this.props.reduxUser(response.response.myuser)
-                    this.setState({ activearguementimageid: this.getactivearguementimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                if (response.hasOwnProperty("myuser")) {
+                    this.props.reduxUser(response.myuser)
+                    this.setState({ activearguementimageid: this.getactivearguementimagefromresponse(response.myuser, imageid), message: `${response.message} Last Updated ${formatUTCDateforDisplay(response.lastupdated)}` })
                 }
 
 
