@@ -33,6 +33,7 @@ class App extends Component {
     try {
       let response = await CheckUserLogin();
       //let myuser = MyUser()
+      console.log(response)
       if (response.hasOwnProperty("myuser")) {
 
         this.props.reduxUser(response.myuser)

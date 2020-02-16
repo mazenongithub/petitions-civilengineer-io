@@ -3,34 +3,12 @@ import * as actions from './actions'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { headerIcon, spinngingIcon } from './svg';
-
+import Petition from './petition';
+import Profile from './profile';
 
 class Landing extends Component {
-    splash() {
-        return (
-            <div className="general-container alignCenter">
-                <button className="general-button spinning-button" alt="spinning button">{spinngingIcon()} </button>
-            </div>
-        )
-    }
-    viewmenu() {
-        let userid = this.props.myusermodel.userid;
-        return (<div className="general-flex">
-            <div className="flex-1">
 
-                <div className="general-container alignCenter regularFont landing-menu">
-                    <Link to={`/${userid}/petitions`} className="general-link regularFont">/{userid}/petitions</Link>
-                </div>
-
-                <div className="general-container alignCenter regularFont landing-menu">
-                    <Link to={`/users/viewpetitions`} className="general-link regularFont">/users/viewpetitions</Link>
-                </div>
-
-            </div>
-        </div>)
-    }
-
-    landing() {
+    showlanding() {
         return (
             <div className="general-flex">
                 <div className="flex-1 regularFont">
@@ -58,49 +36,7 @@ class Landing extends Component {
 
 
     }
-    handleLanding() {
-        if (this.props.myusermodel) {
 
-            if (this.props.myusermodel.hasOwnProperty("userid")) {
-                return (this.viewmenu())
-            } else if (this.props.myusermodel.hasOwnProperty("message")) {
-                return (this.landing())
-            } else {
-                return (this.splash())
-            }
-        }
-        return (
-            <div className="general-flex">
-                <div className="flex-1">
-
-
-
-                    <div className="general-flex">
-                        <div className="flex-1">
-                            {headerIcon()}
-                        </div>
-                    </div>
-
-                    <div className="general-flex">
-                        <div className="flex-1 regularFont showBorder alignCenter">
-                            {this.handleleftheader()}
-                        </div>
-                        <div className="flex-1 regularFont showBorder alignCenter">
-                            <Link to={`/`} className="general-link regularFont">
-                                /
-                        </Link>
-
-                        </div>
-                        <div className="flex-1 regularFont showBorder alignCenter">
-                            {this.handlerightheader()}
-                        </div>
-                    </div>
-                    {this.showsearchresults()}
-
-
-                </div>
-            </div>)
-    }
     getallpetiions() {
         let petitions = [];
         if (this.props.allusers) {
@@ -180,7 +116,21 @@ class Landing extends Component {
     }
     render() {
 
-        return (this.handleLanding())
+        const petition = new Petition();
+        const myuser = petition.getuser.call(this);
+        const landing = () => {
+            if (myuser) {
+                return (<Profile />)
+            } else {
+                return (this.showlanding())
+            }
+        }
+
+
+
+
+
+        return (landing())
     }
 }
 

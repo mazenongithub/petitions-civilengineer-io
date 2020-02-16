@@ -9,18 +9,14 @@ class Header extends Component {
 
 
     handlerightheader() {
-        if (this.props.myusermodel) {
-            let userid = this.props.myusermodel.userid;
-            if (this.props.myusermodel.hasOwnProperty("message")) {
-                return (
-                    <Link to={`/users/register`} className="general-link regularFont">/register</Link>)
-            } else if (this.props.myusermodel.hasOwnProperty("userid")) {
-                const url = `${process.env.REACT_APP_SERVER_API}/users/${userid}/logout`;
-                return (<a href={url} className="general-link regularFont"> logout </a>)
-
-            } else {
-                return;
-            }
+        const petition = new Petition();
+        const myuser = petition.getuser.call(this);
+        if (myuser) {
+            const url = `${process.env.REACT_APP_SERVER_API}/users/${myuser.userid}/logout`;
+            return (<a href={url} className="general-link regularFont"> logout </a>)
+        } else {
+            return (
+                <Link to={`/users/register`} className="general-link regularFont">/register</Link>)
         }
 
 
