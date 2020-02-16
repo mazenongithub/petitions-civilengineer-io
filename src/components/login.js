@@ -43,18 +43,16 @@ class Login extends Component {
         let values = { client, clientid, emailaddress };
         try {
 
-            let myuser = await LoginUser(values);
-            console.log(myuser)
-            if (myuser.hasOwnProperty("userid")) {
+            let response = await LoginUser(values);
+            console.log(response)
+            if (response.hasOwnProperty("myuser")) {
 
-                if (myuser.hasOwnProperty("allusers")) {
-                    this.props.reduxAllUsers(myuser.allusers)
-                    delete myuser.allusers
-                }
-                this.props.reduxUser(myuser)
+                this.props.reduxUser(response.myuser)
 
-            } else {
-                this.setState({ message: myuser.message })
+            }
+
+            if (response.hasOwnProperty("allusers")) {
+                this.props.reduxAllUsers(response.allusers)
             }
         } catch (err) {
             alert(err)

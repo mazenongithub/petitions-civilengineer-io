@@ -140,14 +140,16 @@ class Register extends Component {
         let { userid, client, clientid, profileurl, emailaddress, firstname, lastname, phonenumber } = this.state;
         const values = { userid, client, clientid, profileurl, emailaddress, firstname, lastname, phonenumber };
         try {
-            let myuser = await RegisterUser(values)
-            console.log(myuser)
-            if (myuser.hasOwnProperty("userid")) {
-                this.props.reduxUser(myuser)
-                if (myuser.hasOwnProperty("allusers")) {
-                    this.props.reduxAllUsers(myuser.allusers)
-                }
+            let response = await RegisterUser(values)
+            console.log(response)
+            if (response.hasOwnProperty("myuser")) {
 
+                this.props.reduxUser(response.myuser)
+
+            }
+
+            if (response.hasOwnProperty("allusers")) {
+                this.props.reduxAllUsers(response.allusers)
             }
 
         } catch (err) {
