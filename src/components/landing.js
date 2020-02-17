@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { headerIcon, spinngingIcon } from './svg';
 import Petition from './petition';
 import Profile from './profile';
 
@@ -16,8 +15,7 @@ class Landing extends Component {
                     <div className="general-flex">
                         <div className="flex-1 regularFont constrain-landing">
                             The Petitions App was created to defend your rights.
-                            Easily Create a Petition. View Petitions. Support Petitions.
-                            Comments to Support a petition.
+                            Create a Petition and Support Other Peoples Petition. Create Petitions, add lists conflicts, arguements, attach images to your conflicts and arguements. Orders and Reorders your arguements. Edit Update Delete Petitions, Conflicts, arguements, and Images. Comment and Like other petitions to show support. Apple Sign In Google SignIn Profile Page Profile Photo
                         </div>
                     </div>
 
