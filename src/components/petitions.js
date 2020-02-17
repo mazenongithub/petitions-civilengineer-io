@@ -1745,10 +1745,20 @@ class Petitions extends Component {
                     formData.append("myuser", JSON.stringify(myuser))
                     let response = await UploadConflictImage(formData, conflictid);
                     console.log(response)
-                    if (response.response.hasOwnProperty("myuser")) {
-                        let activeconflictimageid = response.response.activeimageid;
-                        this.props.reduxUser(response.response.myuser)
-                        this.setState({ activeconflictimageid, message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                    if (response.hasOwnProperty("myuser")) {
+
+                        this.props.reduxUser(response.myuser)
+
+                    }
+
+
+                    if (response.hasOwnProperty("message")) {
+                        let message = response.message;
+                        if (response.hasOwnProperty("lastupdated")) {
+                            message += `Last Updated ${formatUTCDateforDisplay(response.lastupdated)}`
+
+                        }
+                        this.setState({ message })
                     }
                 } catch (err) {
                     alert(err)
@@ -1778,10 +1788,20 @@ class Petitions extends Component {
                     formdata.append("myuser", JSON.stringify(myuser));
                     let response = await UploadArguementImage(formdata, arguementid);
                     console.log(response)
-                    if (response.response.hasOwnProperty("myuser")) {
-                        let activearguementimageid = response.response.activeimageid;
-                        this.props.reduxUser(response.response.myuser)
-                        this.setState({ activearguementimageid, message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+                    if (response.hasOwnProperty("myuser")) {
+
+                        this.props.reduxUser(response.myuser)
+
+                    }
+
+
+                    if (response.hasOwnProperty("message")) {
+                        let message = response.message;
+                        if (response.hasOwnProperty("lastupdated")) {
+                            message += `Last Updated ${formatUTCDateforDisplay(response.lastupdated)}`
+
+                        }
+                        this.setState({ message })
                     }
 
                 } catch (err) {
