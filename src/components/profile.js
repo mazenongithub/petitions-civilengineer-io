@@ -90,7 +90,6 @@ class Profile extends Component {
 
         if (myuser) {
             let formData = new FormData();
-            let userid = myuser.userid;
 
             let myfile = document.getElementById("uploadprofileimage");
             // HTML file input, chosen by user
@@ -98,12 +97,23 @@ class Profile extends Component {
             formData.append("profilephoto", myfile.files[0]);
             formData.append("myuser", JSON.stringify(myuser));
 
-            let response = await UploadProfileImage(formData, userid);
+            let response = await UploadProfileImage(formData);
             console.log(response)
-            if (response.response.hasOwnProperty("myuser")) {
-                this.props.reduxUser(response.response.myuser)
-                this.setState({ message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
+            if (response.hasOwnProperty("myuser")) {
+
+                this.props.reduxUser(response.myuser);
+                this.setState({ render: 'render' })
+
             }
+            if (response.hasOwnProperty("message")) {
+                let message = response.message;
+                if (response.hasOwnProperty("lastupdated")) {
+                    message += `Last Updated ${formatUTCDateforDisplay(response.lastupdated)}`
+
+                }
+                this.setState({ message })
+            }
+
         }
 
 

@@ -5,7 +5,9 @@
   height:0;
   cursor: pointer;
 }
-
+.hoverlink:hover{
+  cursor: pointer;
+}
 .profilepicture-icon{
   width:88px;
   height:55px;

@@ -19,6 +19,7 @@ class Login extends Component {
             client: '',
             clientid: '',
             emailaddress: '',
+            message: ''
 
         }
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this)
@@ -49,6 +50,8 @@ class Login extends Component {
 
                 this.props.reduxUser(response.myuser)
 
+            } else if (response.hasOwnProperty("message")) {
+                this.setState({ message: response.message })
             }
 
             if (response.hasOwnProperty("allusers")) {
@@ -185,6 +188,16 @@ class Login extends Component {
                 return;
             }
         }
+        const loginmessage = () => {
+
+            if (this.state.message) {
+                return (<div style={{ ...styles.generalContainer, ...responsiveMargin, ...styles.bottomMargin15, ...styles.alignCenter, ...regularFont, ...styles.generalFont }}>
+                    {this.state.message}
+                </div>)
+            } else {
+                return;
+            }
+        }
 
         const Login = () => {
             return (
@@ -224,6 +237,7 @@ class Login extends Component {
 
 
                             {message()}
+                            {loginmessage()}
 
 
 

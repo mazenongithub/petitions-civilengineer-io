@@ -1,6 +1,6 @@
 export async function RegisterUser(values) {
 
-    let APIURL = `${process.env.REACT_APP_SERVER_API}/users/register`;
+    let APIURL = `https://civilengineer.io/petitions/api/register.php`;
     return fetch(APIURL, {
         method: 'post',
         credentials: 'include',
@@ -31,7 +31,7 @@ export async function RegisterUser(values) {
 }
 export async function LoginUser(values) {
 
-    let APIURL = `${process.env.REACT_APP_SERVER_API}/users/login`;
+    let APIURL = `https://civilengineer.io/petitions/api/login.php`;
     return fetch(APIURL, {
         method: 'post',
         credentials: 'include',
@@ -61,8 +61,7 @@ export async function LoginUser(values) {
 
 }
 export async function SaveComments(values) {
-    let userid = values.myuser.userid;
-    let APIURL = `${process.env.REACT_APP_SERVER_API}/${userid}/comments`;
+    let APIURL = `https://civilengineer.io/petitions/api/commentsendpoint.php`;
     return fetch(APIURL, {
         method: 'post',
         credentials: 'include',
@@ -92,10 +91,7 @@ export async function SaveComments(values) {
 
 }
 export async function SavePetitions(values) {
-    let userid = values.myuser.userid;
-    let APIURL = `${process.env.REACT_APP_SERVER_API}/${userid}/userendpoint`;
-
-
+    let APIURL = `https://civilengineer.io/petitions/api/userendpoint.php`;
     return fetch(APIURL, {
         method: 'post',
         credentials: 'include',
@@ -146,11 +142,33 @@ export async function LoadAllUsers() {
     })
 }
 
-export async function UploadConflictImage(formdata, conflictid) {
+export async function LogoutUser() {
 
+    let APIURL = `https://civilengineer.io/petitions/api/logout.php`
 
-    var APIURL = `${process.env.REACT_APP_SERVER_API}/conflicts/${conflictid}/uploadpetitionimage`
+    return fetch(APIURL, { credentials: 'include' }).then(resp => {
 
+        if (!resp.ok) {
+            if (resp.status >= 400 && resp.status < 500) {
+                return resp.json().then(data => {
+                    let err = { errorMessage: data.message };
+                    throw err;
+                })
+            }
+            else {
+                let err = { errorMessage: 'Please try again later, server is not responding' };
+                throw err;
+            }
+        }
+
+        return resp.json();
+    })
+}
+
+export async function UploadConflictImage(formdata) {
+
+    var APIURL = `https://civilengineer.io/petitions/api/uploadconflictimage.php`
+    console.log(APIURL)
     return fetch(APIURL, {
         method: 'post',
         credentials: 'include',
@@ -177,7 +195,7 @@ export async function UploadConflictImage(formdata, conflictid) {
 
 export async function CheckUserID(userid) {
 
-    var APIURL = `${process.env.REACT_APP_SERVER_API}/${userid}/checkuserid`
+    var APIURL = `https://civilengineer.io/petitions/api/checkuserid.php?userid=${userid}`
     console.log(APIURL)
 
     return fetch(APIURL)
@@ -202,8 +220,7 @@ export async function CheckUserID(userid) {
 
 export async function CheckEmailAddress(emailaddress) {
 
-
-    var APIURL = `${process.env.REACT_APP_SERVER_API}/${emailaddress}/checkemailaddress`
+    var APIURL = `https://civilengineer.io/petitions/api/checkemailaddress.php?emailaddress=${emailaddress}`
     console.log(APIURL)
 
     return fetch(APIURL, {
@@ -229,10 +246,9 @@ export async function CheckEmailAddress(emailaddress) {
         })
 }
 
-export async function UploadArguementImage(formdata, arguementid) {
+export async function UploadArguementImage(formdata) {
 
-
-    var APIURL = `${process.env.REACT_APP_SERVER_API}/arguements/${arguementid}/uploadpetitionimage`
+    var APIURL = `https://civilengineer.io/petitions/api/uploadargumentimage.php`
     return fetch(APIURL, {
         method: 'post',
         credentials: 'include',
@@ -257,41 +273,11 @@ export async function UploadArguementImage(formdata, arguementid) {
         })
 }
 
-export async function DeletePetitionImage(myuser, imageid) {
 
-    console.log(myuser, imageid)
-    var APIURL = `${process.env.REACT_APP_SERVER_API}/${imageid}/deleteimage`
-
-    return fetch(APIURL, {
-        method: 'post',
-        credentials: 'include',
-        headers: new Headers({
-            'Content-Type': 'application/json',
-        }),
-        body: JSON.stringify(myuser)
-    })
-        .then(resp => {
-
-            if (!resp.ok) {
-                if (resp.status >= 400 && resp.status < 500) {
-                    return resp.json().then(data => {
-                        let err = { errorMessage: data.message };
-                        throw err;
-                    })
-                }
-                else {
-                    let err = { errorMessage: 'Please try again later, server is not responding' };
-                    throw err;
-                }
-            }
-
-            return resp.json();
-        })
-}
-export async function UploadProfileImage(formdata, userid) {
+export async function UploadProfileImage(formdata) {
 
 
-    var APIURL = `${process.env.REACT_APP_SERVER_API}/${userid}/uploadprofileimage`
+    var APIURL = `https://civilengineer.io/petitions/api/uploadprofilephoto.php`
 
     return fetch(APIURL, {
         method: 'post',
@@ -318,7 +304,7 @@ export async function UploadProfileImage(formdata, userid) {
 }
 export async function CheckUserLogin() {
 
-    let APIURL = `${process.env.REACT_APP_SERVER_API}/users/checkuser`
+    let APIURL = `https://civilengineer.io/petitions/api/loadmyprofile.php`
     console.log(APIURL)
 
     return fetch(APIURL, { credentials: 'include' }).then(resp => {

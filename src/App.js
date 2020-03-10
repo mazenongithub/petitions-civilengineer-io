@@ -38,6 +38,8 @@ class App extends Component {
 
         this.props.reduxUser(response.myuser)
 
+      } else if (response.hasOwnProperty("message")) {
+        this.props.reduxUser(response.message)
       }
 
       if (response.hasOwnProperty("allusers")) {

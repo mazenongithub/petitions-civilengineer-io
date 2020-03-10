@@ -96,13 +96,10 @@ class Petition {
         if (myuser) {
             try {
 
-
                 let response = await SavePetitions({ myuser });
                 console.log(response)
                 if (response.hasOwnProperty("myuser")) {
-
                     this.props.reduxUser(response.myuser)
-
                 }
 
                 if (response.hasOwnProperty("allusers")) {

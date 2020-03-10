@@ -5,6 +5,7 @@ import { LoadAllUsers, SaveComments } from './actions/api';
 import { yesIcon, noIcon, emptyBox, submitIcon, removeIconSmall, hideImageIcon, showImageIcon } from './svg';
 import { CreateLike, CreateComment, makeID, formatUTCDateforDisplay } from './functions';
 import { Link } from 'react-router-dom';
+import Petition from './petition';
 class ShowPetition extends Component {
     constructor(props) {
         super(props)
@@ -432,12 +433,17 @@ class ShowPetition extends Component {
             let like = this.getuserlike();
 
             if (like.like === 'support') {
-                value = ''
+                this.props.allusers.myuser[i].petitions.petition[j].likes.like.splice(k, 1);
+                if (this.props.allusers.myuser[i].petitions.petition[j].likes.like.length === 0) {
+                    delete this.props.allusers.myuser[i].petitions.petition[j].likes.like;
+                    delete this.props.allusers.myuser[i].petitions.petition[j].likes;
+                }
 
             } else {
                 value = 'support'
+                allusers.myuser[i].petitions.petition[j].likes.like[k].like = value;
             }
-            allusers.myuser[i].petitions.petition[j].likes.like[k].like = value;
+
             this.props.reduxAllUsers(allusers);
             this.setState({ render: 'render' })
 
@@ -522,12 +528,17 @@ class ShowPetition extends Component {
             let like = this.getuserlike();
 
             if (like.like === 'against') {
-                value = ''
+                this.props.allusers.myuser[i].petitions.petition[j].likes.like.splice(k, 1);
+                if (this.props.allusers.myuser[i].petitions.petition[j].likes.like.length === 0) {
+                    delete this.props.allusers.myuser[i].petitions.petition[j].likes.like;
+                    delete this.props.allusers.myuser[i].petitions.petition[j].likes;
+                }
 
             } else {
                 value = 'against'
+                allusers.myuser[i].petitions.petition[j].likes.like[k].like = value;
             }
-            allusers.myuser[i].petitions.petition[j].likes.like[k].like = value;
+
             this.props.reduxAllUsers(allusers);
             this.setState({ render: 'render' })
 
@@ -614,6 +625,8 @@ class ShowPetition extends Component {
     }
 
     handleComment(comment) {
+
+
         this.setState({ comment });
         if (this.props.allusers.hasOwnProperty("myuser")) {
             let allusers = this.props.allusers;
@@ -628,12 +641,14 @@ class ShowPetition extends Component {
                 this.setState({ comment: '' })
 
             } else {
+                const petition = new Petition();
                 this.setState({ comment });
                 let commentid = makeID(16);
-                let userid = this.getuserbypetitionid().userid;
+                const myuser = petition.getuser.call(this)
+                const userid = myuser.userid;
                 let newcomment = CreateComment(commentid, comment, userid);
-                let petition = this.getpetition();
-                if (petition.hasOwnProperty("comments")) {
+                let mypetition = this.getpetition();
+                if (mypetition.hasOwnProperty("comments")) {
                     allusers.myuser[i].petitions.petition[j].comments.comment.push(newcomment)
                 } else {
                     let comments = { comment: [newcomment] }

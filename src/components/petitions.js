@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
 import { removeIconSmall, petitionidicon, redLeft, redRight, blueLeft, blueRight, saveAllPetitionsIcon, hideImageIcon, showImageIcon, addImageIcon, scrollImageUp, scrollImageDown, scrollImageLeft, scrollImageRight } from './svg';
-import { CreateConflict, CreatePetition, makeID, CreateArguement, formatUTCDateforDisplay } from './functions';
-import { UploadConflictImage, UploadArguementImage, DeletePetitionImage } from './actions/api';
+import { CreateConflict, CreatePetition, makeID, CreateArguement, formatUTCDateforDisplay, CreateImage } from './functions';
+import { UploadConflictImage, UploadArguementImage } from './actions/api';
 import Petition from './petition';
 
 
@@ -1459,33 +1459,58 @@ class Petitions extends Component {
 
 
     }
+    getconflictimagefromid(imageid) {
+        let conflict = this.getactiveconflict();
+        let key = false;
+        if (conflict.hasOwnProperty("images")) {
+            // eslint-disable-next-line
+            conflict.images.image.map((image, i) => {
+                if (image.imageid === imageid) {
+                    key = i;
+                }
+            })
+        }
+        return key;
+    }
     async removeconflictimage(imageid) {
         if (window.confirm(`Are you sure you want to delete image ?`)) {
             if (this.props.myusermodel) {
                 let myuser = this.props.myusermodel;
-                let response = await DeletePetitionImage({ myuser }, imageid);
-                console.log(response)
-                if (response.response.hasOwnProperty("myuser")) {
-                    this.props.reduxUser(response.response.myuser)
-                    this.setState({ activearguementimageid: this.getactiveconflictimagefromresponse(response.response.myuser, imageid), message: `${response.response.message} Last Updated ${formatUTCDateforDisplay(response.response.lastupdated)}` })
-                }
-
+                let i = this.getactivepetitionposition();
+                let j = this.getactiveconflictposition();
+                let k = this.getconflictimagefromid(imageid);
+                myuser.petitions.petition[i].conflicts.conflict[j].images.image.splice(k, 1)
+                this.props.reduxUser(myuser);
+                this.setState({ activeconflictimageid: false })
 
             }
         }
+    }
+    getarguementimagekeybyid(imageid) {
+        let arguement = this.getactivearguement();
+        let key = false;
+        if (arguement.hasOwnProperty("images")) {
+            // eslint-disable-next-line
+            arguement.images.image.map((image, i) => {
+                if (image.imageid === imageid) {
+                    key = i;
+                }
+            })
+        }
+        return key;
     }
     async removearguementimage(imageid) {
         if (window.confirm(`Are you sure you want to delete image ?`)) {
             if (this.props.myusermodel) {
                 let myuser = this.props.myusermodel;
 
-                let response = await DeletePetitionImage({ myuser }, imageid);
-                console.log(response)
-                if (response.hasOwnProperty("myuser")) {
-                    this.props.reduxUser(response.myuser)
-                    this.setState({ activearguementimageid: this.getactivearguementimagefromresponse(response.myuser, imageid), message: `${response.message} Last Updated ${formatUTCDateforDisplay(response.lastupdated)}` })
-                }
-
+                let i = this.getactivepetitionposition();
+                let j = this.getactiveconflictposition();
+                let k = this.getactivearguementposition();
+                let l = this.getarguementimagekeybyid(imageid)
+                myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images.image.splice(l, 1);
+                this.props.reduxUser(myuser);
+                this.setState({ activearguementimageid: false })
 
             }
         }
@@ -1738,19 +1763,34 @@ class Petitions extends Component {
 
             if (this.state.activeconflictid) {
                 try {
-                    let conflictid = this.getactiveconflict().conflictid;
+                    let imageid = makeID(16);
+                    let image = '';
+                    let newImage = CreateImage(imageid, image);
+                    let i = this.getactivepetitionposition();
+                    let j = this.getactiveconflictposition();
+                    let myconflict = this.getactiveconflict();
+                    if (myconflict.hasOwnProperty("images")) {
+                        myuser.petitions.petition[i].conflicts.conflict[j].images.image.push(newImage)
+                    } else {
+                        myuser.petitions.petition[i].conflicts.conflict[j].images = { image: [newImage] }
+                    }
+                    let conflictid = myconflict.conflictid;
                     let formData = new FormData();
+                    let petition = this.getactivepetition();
+                    let petitionid = petition.petitionid;
                     let myfile = document.getElementById("image-conflict");
-                    formData.append("profilephoto", myfile.files[0]);
+                    formData.append("conflictimage", myfile.files[0]);
                     formData.append("myuser", JSON.stringify(myuser))
-                    let response = await UploadConflictImage(formData, conflictid);
+                    formData.append("conflictid", conflictid);
+                    formData.append("imageid", imageid);
+                    formData.append("petitionid", petitionid);
+                    let response = await UploadConflictImage(formData);
                     console.log(response)
                     if (response.hasOwnProperty("myuser")) {
 
                         this.props.reduxUser(response.myuser)
 
                     }
-
 
                     if (response.hasOwnProperty("message")) {
                         let message = response.message;
@@ -1773,27 +1813,45 @@ class Petitions extends Component {
 
     }
     async uploadarguementimage() {
-
+        console.log("uploadarguementimage");
         let myuser = this.getmyuser()
         if (myuser) {
-            if (this.state.activearguementid) {
-                try {
-                    let arguementid = this.getactivearguement().arguementid;
-                    console.log(arguementid)
-                    delete myuser.allusers;
-                    let formdata = new FormData();
-                    let myfile = document.getElementById("image-arguement");
-                    formdata.append("profilephoto", myfile.files[0]);
 
-                    formdata.append("myuser", JSON.stringify(myuser));
-                    let response = await UploadArguementImage(formdata, arguementid);
+            if (this.state.activeconflictid) {
+                try {
+                    let imageid = makeID(16);
+                    let image = '';
+                    let newImage = CreateImage(imageid, image);
+                    let i = this.getactivepetitionposition();
+                    let j = this.getactiveconflictposition();
+                    let k = this.getactivearguementposition();
+                    let myarguement = this.getactivearguement();
+                    if (myarguement.hasOwnProperty("images")) {
+                        myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images.image.push(newImage)
+                    } else {
+                        myuser.petitions.petition[i].conflicts.conflict[j].arguements.arguement[k].images = { image: [newImage] }
+                    }
+
+                    let arguementid = myarguement.arguementid;
+                    let myconflict = this.getactiveconflict();
+                    let conflictid = myconflict.conflictid;
+                    let formData = new FormData();
+                    let petition = this.getactivepetition();
+                    let petitionid = petition.petitionid;
+                    let myfile = document.getElementById("image-arguement");
+                    formData.append("arguementimage", myfile.files[0]);
+                    formData.append("myuser", JSON.stringify(myuser));
+                    formData.append("arguementid", arguementid);
+                    formData.append("conflictid", conflictid);
+                    formData.append("imageid", imageid);
+                    formData.append("petitionid", petitionid);
+                    let response = await UploadArguementImage(formData);
                     console.log(response)
                     if (response.hasOwnProperty("myuser")) {
 
                         this.props.reduxUser(response.myuser)
 
                     }
-
 
                     if (response.hasOwnProperty("message")) {
                         let message = response.message;
@@ -1803,11 +1861,13 @@ class Petitions extends Component {
                         }
                         this.setState({ message })
                     }
-
                 } catch (err) {
                     alert(err)
                 }
+
             }
+
+
         }
 
 
