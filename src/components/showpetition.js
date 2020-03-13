@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
-import { LoadAllUsers, SaveComments } from './actions/api';
+import { SaveComments } from './actions/api';
 import { yesIcon, noIcon, emptyBox, submitIcon, removeIconSmall, hideImageIcon, showImageIcon } from './svg';
 import { CreateLike, CreateComment, makeID, formatUTCDateforDisplay } from './functions';
 import { Link } from 'react-router-dom';
@@ -15,9 +15,7 @@ class ShowPetition extends Component {
     componentDidMount() {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions)
-        if (!this.props.allusers.hasOwnProperty("myuser")) {
-            this.loadallmyusers()
-        }
+
 
     }
     getuserbypetitionid() {
@@ -43,13 +41,7 @@ class ShowPetition extends Component {
         }
         return user;
     }
-    async loadallmyusers() {
-        let response = await LoadAllUsers();
-        console.log(response)
-        if (response.hasOwnProperty("allusers")) {
-            this.props.reduxAllUsers(response.allusers)
-        }
-    }
+
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateWindowDimensions);
     }
@@ -58,7 +50,7 @@ class ShowPetition extends Component {
     }
     getpetition() {
         let petitions = {};
-        let petitionid = this.props.match.params.petitionid;
+        let url = this.props.match.params.petitionid;
 
         if (this.props.allusers) {
             if (this.props.allusers.hasOwnProperty("myuser")) {
@@ -68,7 +60,7 @@ class ShowPetition extends Component {
                     if (myuser.hasOwnProperty("petitions")) {
                         // eslint-disable-next-line
                         myuser.petitions.petition.map(petition => {
-                            if (petition.petitionid === petitionid) {
+                            if (petition.url === url) {
                                 petitions = petition;
                             }
                         })
@@ -1107,6 +1099,13 @@ class ShowPetition extends Component {
                             </div>
                         </div>
                     </div>
+
+                    <div className="general-flex">
+                        <div className="flex-1">
+                            <span className={`regularFont`}>{petition.openingstatement}</span>
+                        </div>
+                    </div>
+
 
                     {this.showpetition()}
                     {this.showlikebuttons()}

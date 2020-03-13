@@ -121,7 +121,7 @@ export async function SavePetitions(values) {
 }
 export async function LoadAllUsers() {
 
-    let APIURL = `${process.env.REACT_APP_SERVER_API}/users/getallusers`
+    let APIURL = `https://civilengineer.io/petitions/api/loadallusers.php`
 
     return fetch(APIURL, { credentials: 'include' }).then(resp => {
 
@@ -305,6 +305,30 @@ export async function UploadProfileImage(formdata) {
 export async function CheckUserLogin() {
 
     let APIURL = `https://civilengineer.io/petitions/api/loadmyprofile.php`
+    console.log(APIURL)
+
+    return fetch(APIURL, { credentials: 'include' }).then(resp => {
+
+        if (!resp.ok) {
+            if (resp.status >= 400 && resp.status < 500) {
+                return resp.json().then(data => {
+                    let err = { errorMessage: data.message };
+                    throw err;
+                })
+            }
+            else {
+                let err = { errorMessage: 'Please try again later, server is not responding' };
+                throw err;
+            }
+        }
+
+        return resp.json();
+    })
+}
+
+export async function CheckPetitionURL(url) {
+
+    let APIURL = `https://civilengineer.io/petitions/api/validatepetitionurl.php?url=${url}`
     console.log(APIURL)
 
     return fetch(APIURL, { credentials: 'include' }).then(resp => {

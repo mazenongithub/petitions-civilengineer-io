@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import * as actions from './actions'
 import { connect } from 'react-redux';
-import { LoadAllUsers } from './actions/api';
 import { Link } from 'react-router-dom';
 class ViewPetitions extends Component {
     constructor(props) {
@@ -13,18 +12,10 @@ class ViewPetitions extends Component {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions)
 
-        if (!this.props.allusers.hasOwnProperty("myuser")) {
-            this.loadallmyusers()
-        }
+
 
     }
-    async loadallmyusers() {
-        let response = await LoadAllUsers();
-        console.log(response)
-        if (response.hasOwnProperty("allusers")) {
-            this.props.reduxAllUsers(response.allusers)
-        }
-    }
+
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateWindowDimensions);
     }
@@ -134,9 +125,9 @@ class ViewPetitions extends Component {
 
         return (<div className="general-flex">
             <div className="flex-1">
-                <Link to={`/petitions/${petition.petitionid}`} className="general-link">
+                <Link to={`/petitions/${petition.url}`} className="general-link">
                     <div className="regularFont alignCenter">
-                        {`${process.env.REACT_APP_CLIENT_API}/petitions/${petition.petitionid}`}
+                        {`${process.env.REACT_APP_CLIENT_API}/petitions/${petition.url}`}
                     </div>
                     <div className="regularFont alignCenter">
                         {petition.petition}

@@ -67,11 +67,11 @@ export function CreateConflict(conflictid, petitionid, conflict) {
     return ({ conflictid, petitionid, conflict })
 
 }
-export function CreateImage(imageid, image, display) {
+export function CreateImage(imageid, image) {
     return ({ imageid, image })
 }
-export function CreatePetition(petitionid, petition, versus) {
-    return ({ petitionid, petition, versus })
+export function CreatePetition(petitionid, petition, versus, openingstatement, url) {
+    return ({ petitionid, petition, versus, openingstatement, url })
 }
 export function CreateArguement(arguementid, arguement) {
     return ({ arguementid, arguement })

@@ -3,7 +3,7 @@ import * as actions from './actions'
 import { connect } from 'react-redux';
 import { removeIconSmall, petitionidicon, redLeft, redRight, blueLeft, blueRight, saveAllPetitionsIcon, hideImageIcon, showImageIcon, addImageIcon, scrollImageUp, scrollImageDown, scrollImageLeft, scrollImageRight } from './svg';
 import { CreateConflict, CreatePetition, makeID, CreateArguement, formatUTCDateforDisplay, CreateImage } from './functions';
-import { UploadConflictImage, UploadArguementImage } from './actions/api';
+import { UploadConflictImage, UploadArguementImage, CheckPetitionURL } from './actions/api';
 import Petition from './petition';
 
 
@@ -19,9 +19,11 @@ class Petitions extends Component {
             activepetitionid: '',
             activearguementid: '',
             activearguementimageid: '',
+            openingstatement: '',
             conflict: '',
             arguement: '',
-            render: ''
+            render: '',
+            url: ''
 
         }
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this)
@@ -50,31 +52,35 @@ class Petitions extends Component {
         }
         return myusermodel;
     }
-    getpetitionid() {
+    getpetitionurl() {
         if (this.state.activepetitionid) {
-            return (this.getactivepetition().petitionid)
+
+            return (this.getactivepetition().url)
 
         } else {
-            return this.state.petitionid
+            return this.state.url
         }
 
     }
 
-    handlepetitionid(petitionid) {
+    handlepetitionurl(url) {
+
         if (this.props.myusermodel) {
             let myuser = this.props.myusermodel;
             if (this.state.activepetitionid) {
-
                 let i = this.getactivepetitionposition();
-                myuser.petitions.petition[i].petitionid = petitionid;
+
+                myuser.petitions.petition[i].url = url;
                 this.props.reduxUser(myuser);
-                this.setState({ activepetitionid: petitionid })
+                this.setState({ render: 'render' })
+
 
             } else {
-                this.setState({ petitionid })
+                let petitionid = makeID(16)
                 let petition = this.state.petition;
                 let versus = this.state.versus;
-                let newpetition = CreatePetition(petitionid, petition, versus);
+                let openingstatement = this.state.openingstatement;
+                let newpetition = CreatePetition(petitionid, petition, versus, openingstatement, url);
                 if (myuser.hasOwnProperty("petitions")) {
 
                     myuser.petitions.petition.push(newpetition);
@@ -91,14 +97,44 @@ class Petitions extends Component {
             }
         }
     }
+    async checkpetitionurl(url) {
+        let myuser = this.getmyuser();
+        if (myuser) {
+            try {
+                let response = await CheckPetitionURL(url);
+                console.log(response)
+                let i = this.getactivepetitionposition();
+                if (response.hasOwnProperty("invalid")) {
+                    myuser.petitions.petition[i].invalid = url;
+                    this.props.reduxUser(myuser)
+                    this.setState({ render: 'render' })
+                } else {
+                    if (myuser.petitions.petition[i].hasOwnProperty("invalid")) {
+
+                        delete myuser.petitions.petition[i].invalid;
+                        this.props.reduxUser(myuser)
+                        this.setState({ render: 'render' })
+                    }
+                }
+
+            } catch (err) {
+                alert(err)
+            }
+        }
+
+    }
     showpetitionid() {
 
 
         if (this.state.width > 400) {
-            return (<div className="regularFont general-container">Petition ID <input type="text" value={this.getpetitionid()} onChange={event => { this.handlepetitionid(event.target.value) }} className="general-field regularFont addLeftMargin petitionid-field" /></div>)
+            return (<div className="regularFont general-container">Petition URL
+                <input type="text" value={this.getpetitionurl()}
+                    onBlur={event => { this.checkpetitionurl(event.target.value) }}
+                    onChange={event => { this.handlepetitionurl(event.target.value) }}
+                    className="general-field regularFont addLeftMargin petitionid-field" /></div>)
         } else {
 
-            return (<div className="regularFont general-container"> Petition ID <br /> <input type="text" value={this.getpetitionid()} onChange={event => { this.handlepetitionid(event.target.value) }} className="general-field regularFont addLeftMargin" /></div >)
+            return (<div className="regularFont general-container"> Petition URL <br /> <input type="text" value={this.getpetitionurl()} onChange={event => { this.handlepetitionurl(event.target.value) }} className="general-field regularFont addLeftMargin" /></div>)
 
         }
     }
@@ -109,12 +145,31 @@ class Petitions extends Component {
                 let i = this.getactivepetitionposition();
                 myuser.petitions.petition[i].petition = petition;
                 this.props.reduxUser(myuser);
+
                 this.setState({ render: 'render' })
             } else {
-                this.setState({ petition })
+                let petitionid = makeID(16)
+                let url = this.state.url;
+                let versus = this.state.versus;
+                let openingstatement = this.state.openingstatement;
+                let newpetition = CreatePetition(petitionid, petition, versus, openingstatement, url);
+                if (myuser.hasOwnProperty("petitions")) {
+
+                    myuser.petitions.petition.push(newpetition);
+
+                } else {
+                    let petitions = { petition: [newpetition] }
+                    myuser.petitions = petitions;
+
+                }
+                this.props.reduxUser(myuser);
+                this.setState({ activepetitionid: newpetition.petitionid })
+
+
             }
         }
     }
+
     getpetition() {
         if (this.state.activepetitionid) {
             return (this.getactivepetition().petition)
@@ -125,6 +180,47 @@ class Petitions extends Component {
 
     }
 
+    handleopeningstatement(openingstatement) {
+        if (this.props.myusermodel) {
+            let myuser = this.props.myusermodel;
+            if (this.state.activepetitionid) {
+                let i = this.getactivepetitionposition();
+                myuser.petitions.petition[i].openingstatement = openingstatement;
+                this.props.reduxUser(myuser);
+                this.setState({ render: 'render' })
+            } else {
+                let petitionid = makeID(16)
+                let petition = this.state.petition;
+                let versus = this.state.versus;
+                let url = this.state.url;
+                let newpetition = CreatePetition(petitionid, petition, versus, openingstatement, url);
+                if (myuser.hasOwnProperty("petitions")) {
+
+                    myuser.petitions.petition.push(newpetition);
+
+                } else {
+                    let petitions = { petition: [newpetition] }
+                    myuser.petitions = petitions;
+
+                }
+                this.props.reduxUser(myuser);
+                this.setState({ activepetitionid: newpetition.petitionid })
+
+
+            }
+        }
+    }
+
+    getopeningstatement() {
+        if (this.state.activepetitionid) {
+            return (this.getactivepetition().openingstatement)
+        } else {
+            return (this.state.openingstatement)
+        }
+
+    }
+
+
     handleversus(versus) {
         if (this.props.myusermodel) {
             let myuser = this.props.myusermodel;
@@ -134,7 +230,24 @@ class Petitions extends Component {
                 this.props.reduxUser(myuser);
                 this.setState({ render: 'render' })
             } else {
-                this.setState({ versus })
+                let petitionid = makeID(16)
+                let petition = this.state.petition;
+                let url = this.state.url;
+                let openingstatement = this.state.openingstatement;
+                let newpetition = CreatePetition(petitionid, petition, versus, openingstatement, url);
+                if (myuser.hasOwnProperty("petitions")) {
+
+                    myuser.petitions.petition.push(newpetition);
+
+                } else {
+                    let petitions = { petition: [newpetition] }
+                    myuser.petitions = petitions;
+
+                }
+                this.props.reduxUser(myuser);
+                this.setState({ activepetitionid: newpetition.petitionid })
+
+
             }
         }
     }
@@ -244,14 +357,14 @@ class Petitions extends Component {
             <div className="general-flex">
                 <div className="flex-1 noBorder alignCenter">
                     <button className="general-button showpetitionicon" onClick={event => { this.makepetitionactive(petition.petitionid) }}>
-                        {petitionidicon(petition.petitionid)}
+                        {petitionidicon(petition.url)}
                     </button>
                 </div>
                 <div className="flex-2 noBorder">
                     <button className="general-button remove-icon-small" onClick={() => this.removePetition(petition.petitionid)}>
                         {removeIconSmall()}
                     </button>
-                    <div className="general-container titleFont">{petition.petitionid}</div>
+                    <div className="general-container titleFont">{petition.url}</div>
                 </div>
 
             </div>
@@ -265,7 +378,7 @@ class Petitions extends Component {
                 <div className="general-flex">
                     <div className="flex-1 noBorder alignCenter">
                         <button className="general-button showpetitionicon" onClick={event => { this.makepetitionactive(petition.petitionid) }}>
-                            {petitionidicon(petition.petitionid)}
+                            {petitionidicon(petition.url)}
                         </button>
                     </div>
                     <div className="flex-2 noBorder">
@@ -275,7 +388,7 @@ class Petitions extends Component {
                     </div>
                 </div>
                 <div className="general-flex">
-                    <div className="flex-1 titleFont alignCenter noBorder">{petition.petitionid}</div>
+                    <div className="flex-1 titleFont alignCenter noBorder">{petition.url}</div>
                 </div>
             </div>
         )
@@ -289,7 +402,7 @@ class Petitions extends Component {
                     <div className="general-flex">
                         <div className="flex-1 noBorder alignCenter">
                             <button className="general-button showpetitionicon" onClick={event => { this.makepetitionactive(petition.petitionid) }}>
-                                {petitionidicon(petition.petitionid)}
+                                {petitionidicon(petition.url)}
                             </button>
                         </div>
                         <div className="flex-2 noBorder">
@@ -302,7 +415,7 @@ class Petitions extends Component {
 
                     <div className="general-flex">
                         <div className="flex-1 titleFont alignCenter">
-                            {petition.petitionid}
+                            {petition.petitionurl}
                         </div>
                     </div>
 
@@ -1813,7 +1926,7 @@ class Petitions extends Component {
 
     }
     async uploadarguementimage() {
-        console.log("uploadarguementimage");
+
         let myuser = this.getmyuser()
         if (myuser) {
 
@@ -2014,7 +2127,7 @@ class Petitions extends Component {
     }
     getarguementkeysbyid(arguementid) {
         let key = [];
-        console.log("getkeys", arguementid)
+
         if (this.state.activepetitionid) {
             let petition = this.getactivepetition();
             if (petition.hasOwnProperty("conflicts")) {
@@ -2253,6 +2366,17 @@ class Petitions extends Component {
             </div>
         </div>)
     }
+    validateurlmessage() {
+        const petition = this.getactivepetition();
+
+        if (petition.hasOwnProperty("invalid")) {
+            return (<div className="regularFont general-container">
+                {petition.invalid} is not available, please choose another
+            </div>)
+        } else {
+            return;
+        }
+    }
     render() {
         return (<div className="general-flex">
             <div className="flex-1">
@@ -2264,8 +2388,14 @@ class Petitions extends Component {
                             {this.getmyuser().userid}/ petitions
                         </div>
                         {this.showpetitionid()}
+                        {this.validateurlmessage()}
                         <div className="regularFont general-container">Petition <br /> <input type="text" value={this.getpetition()} onChange={event => { this.handlepetition(event.target.value) }} className="general-field regularFont addLeftMargin" /></div>
                         <div className="regularFont general-container">Versus <br /> <input type="text" value={this.getversus()} onChange={event => { this.handleversus(event.target.value) }} className="general-field regularFont addLeftMargin" /></div>
+                        <div className="regularFont general-container">Opening Statement <br />
+                            <textarea value={this.getopeningstatement()}
+
+                                onChange={event => { this.handleopeningstatement(event.target.value) }}
+                                className="conflict-text general-text general-field regularFont addLeftMargin"></textarea></div>
                     </div>
                 </div>
                 <div className="general-flex">

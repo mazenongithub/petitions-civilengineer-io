@@ -90,10 +90,29 @@ class Petition {
         }
 
     }
+    validatepetitions() {
+        const petition = new Petition();
+        const myuser = petition.getuser.call(this)
+        let validate = {};
+        validate.validate = true;
+        validate.message = ''
+        if (myuser.hasOwnProperty("petitions")) {
+            // eslint-disable-next-line
+            myuser.petitions.petition.map(petition => {
+                if (petition.hasOwnProperty("invalid")) {
+                    validate.validate = false;
+                    validate.message = `Petition URL ${petition.url} is taken `;
+                }
+            })
+        }
+        return validate;
+    }
+
     async saveallpetition() {
         const petition = new Petition();
         const myuser = petition.getuser.call(this)
-        if (myuser) {
+        const validate = petition.validatepetitions.call(this)
+        if (myuser && validate.validate) {
             try {
 
                 let response = await SavePetitions({ myuser });
@@ -117,6 +136,8 @@ class Petition {
             } catch (err) {
                 alert(err)
             }
+        } else {
+            this.setState({ message: validate.message })
         }
     }
     async checkuserid(userid) {
